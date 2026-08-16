@@ -75,7 +75,7 @@
 
   <script type="module">
     import { setSession, getSession } from './js/services/session.service.js';
-    import { fetchData, debounce } from './js/utils.js';
+    import { API_BASE, fetchData, debounce } from './js/utils.js';
 
     document.addEventListener('DOMContentLoaded', async () => {
       const grid = document.getElementById('selection-grid');
@@ -121,7 +121,8 @@
 
       // Fetch member data
       try {
-        const raw = await fetchData('data/members.json');
+        const raw = await fetchData(`${API_BASE}/members`);
+
         // Filter by gender path
         allMembers = (raw || []).filter(m => m.gender === session.gender);
       } catch (e) {

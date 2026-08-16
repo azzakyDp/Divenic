@@ -130,7 +130,7 @@
   <script type="module">
     import { setSession, getSession } from './js/services/session.service.js';
     import { optimazeCloudinary } from './js/services/asset.service.js';
-    import { fetchData } from './js/utils.js';
+    import { API_BASE, fetchData } from './js/utils.js';
 
     document.addEventListener('DOMContentLoaded', async () => {
       const form = document.getElementById('register-form');
@@ -149,7 +149,8 @@
 
       // Fetch member data
       try {
-        allMembers = await fetchData('data/members.json') || [];
+        allMembers = await fetchData(`${API_BASE}/members`) || [];
+
       } catch (e) {
         console.error('Error fetching members:', e);
       }

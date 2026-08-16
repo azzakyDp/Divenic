@@ -5,7 +5,10 @@
 
 
 
+export const API_BASE = 'http://localhost:3000/api';
+
 const jsonCache = new Map();
+
 
 /**
  * Fetch JSON data from a file path with in-memory caching

@@ -1,9 +1,11 @@
-import { fetchData, qs, el, staggerReveal, isMobile, initImageSkeletons, createLoadMoreButton, animateStaggeredReveal } from './utils.js';
+import { API_BASE, fetchData, qs, el, staggerReveal, isMobile, initImageSkeletons, createLoadMoreButton, animateStaggeredReveal } from './utils.js';
 import { buildMemberCard } from './components/member-card.js';
 import { buildMentorCard } from './components/mentor-card.js';
 
-const MEMBER_PATH = 'data/members.json';
-const MENTOR_PATH = 'data/mentors.json';
+const MEMBER_PATH = `${API_BASE}/members`;
+
+const MENTOR_PATH = `${API_BASE}/mentors`;
+
 const BATCH = 10;
 
 function initMobileTap(grid) {
