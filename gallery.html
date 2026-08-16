@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <!-- Session Guard -->
+  <script type="module">
+    import { guardSession } from './js/services/session.service.js';
+    guardSession('gender', 'landing.html');
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Arsip Foto Kenangan Divenic — Rumah bagi persahabatan yang tetap terjaga.">
+  <title>Galeri Divenic — Digital Yearbook</title>
+
+  <!-- Favicon & Icons -->
+  <link rel="icon" href="asset/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="asset/logo.png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/album.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+
+<body>
+
+  <!-- ── Loading Screen ── -->
+  <div id="loading-screen" aria-hidden="true">
+    <div class="loading-inner">
+      <img src="asset/logo.png" alt="Divenic Logo" class="loading-logo">
+      <p class="loading-tagline">Memuat arsip foto...</p>
+      <div class="loading-bar">
+        <div class="loading-bar-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Navbar ── -->
+  <nav id="navbar" role="navigation" aria-label="Navigasi utama">
+    <a href="index.html" id="nav-logo-link" class="nav-logo" aria-label="Divenic — Halaman Utama">
+      <img src="asset/logo.png" alt="Divenic Logo" width="44" height="44">
+    </a>
+
+    <ul class="nav-links" role="list">
+      <li><a href="index.html" class="nav-link">Beranda</a></li>
+      <li><a href="member.html" class="nav-link">Member</a></li>
+      <li><a href="mentor.html" class="nav-link">Mentor</a></li>
+      <li><a href="gallery.html" class="nav-link active">Galeri</a></li>
+      <li><button id="btn-logout" class="nav-link"
+          style="background:none; border:none; padding:0; cursor:pointer; font:inherit; display:flex; align-items:center; gap:6px; color:var(--slate);"><i
+            class="fa-solid fa-right-from-bracket"></i> Keluar</button></li>
+    </ul>
+
+    <!-- Hamburger -->
+    <button id="hamburger" class="nav-hamburger" aria-label="Buka menu" aria-expanded="false">
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+    </button>
+  </nav>
+
+  <!-- Mobile overlay -->
+  <div id="menu-overlay" aria-hidden="true"></div>
+
+  <!-- Mobile menu -->
+  <nav id="mobile-menu" aria-label="Menu mobile">
+    <a href="index.html" class="mobile-nav-link">Beranda</a>
+    <a href="member.html" class="mobile-nav-link">Member</a>
+    <a href="mentor.html" class="mobile-nav-link">Mentor</a>
+    <a href="gallery.html" class="mobile-nav-link">Galeri</a>
+    <a href="#" id="btn-logout-mobile" class="mobile-nav-link"
+      style="color: var(--copper); display:flex; align-items:center; gap:8px;"><i
+        class="fa-solid fa-right-from-bracket"></i> Keluar</a>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN CONTENT
+  ════════════════════════════════════════════ -->
+  <main id="main-content" style="display:none; opacity:0; padding-top: 100px;">
+    <h1 class="sr-only">Galeri Foto Kenangan Divenic</h1>
+
+    <section id="album" class="section">
+      <div class="container">
+        <div class="album-header" data-reveal>
+          <span class="section-label">Arsip Foto</span>
+          <h2 class="section-title">Galeri <em>Kenangan</em></h2>
+          <div class="divider" style="margin: var(--space-md) auto;"></div>
+          <p class="section-subtitle">
+            Setiap foto menyimpan cerita. Klik untuk membuka kenangan.
+          </p>
+        </div>
+
+        <!-- Photo grid — populated dynamically with infinite scroll batching -->
+        <div id="photo-grid" class="photo-grid" aria-label="Grid foto kenangan">
+          <p style="text-align:center; color:var(--mid-grey); padding:var(--space-xl);">
+            Memuat foto...
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Lightbox ── -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Tampilan foto besar">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" aria-label="Tutup lightbox">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <img src="" alt="">
+      <p class="lightbox-caption"></p>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo-row">
+          <div class="footer-logo-box" aria-hidden="true">
+            <img src="asset/logo.png" alt="logo Divenic" width="44" height="44">
+          </div>
+          <div class="footer-wordmark">
+            <span class="footer-wordmark-name">Divenic</span>
+            <span class="footer-wordmark-sub">Buku Tahunan Digital</span>
+          </div>
+        </div>
+        <p class="footer-desc">Bukan sekadar website, melainkan rumah bagi persahabatan yang tetap terjaga.</p>
+      </div>
+      <nav class="footer-nav" aria-label="Quick navigation">
+        <h3 class="footer-nav-title">Navigasi</h3>
+        <ul class="footer-nav-list">
+          <li><a href="index.html#hero" class="footer-link">Beranda</a></li>
+          <li><a href="index.html#events" class="footer-link">Event</a></li>
+          <li><a href="index.html#mentors" class="footer-link">Mentor</a></li>
+          <li><a href="index.html#members" class="footer-link">Member</a></li>
+          <li><a href="index.html#album" class="footer-link">Galeri</a></li>
+          <li><a href="index.html#kaleidoskop" class="footer-link">Kaleidoskop</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="footer-copy-bar">
+      <p class="footer-copy">&copy; 2025 Divenic. Semua kenangan tersimpan di sini.</p>
+    </div>
+  </footer>
+
+  <!-- ── Scripts ── -->
+  <script type="module">
+    import { initScrollReveal } from './js/utils.js';
+    import { bindLogoutHandler } from './js/services/session.service.js';
+    import { initLoadingScreen, initNavbar, initMobileMenu } from './js/animation.js';
+    import { initFullGallery } from './js/gallery.js';
+
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      initLoadingScreen();
+      initNavbar();
+      initMobileMenu();
+
+      // Logout handler
+      bindLogoutHandler();
+
+      // Render full gallery using batch rendering and infinite scroll sentinel
+      await initFullGallery();
+
+      window.__hideLoading?.();
+      initScrollReveal();
+    });
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Divenic Putri — Segera Hadir.">
+  <title>Segera Hadir — Divenic</title>
+  <link rel="icon" href="asset/logo.png" type="image/png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/flow.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+
+<body class="flow-body">
+
+  <div class="flow-container cs-wrap">
+    <div class="cs-icon">
+      <i class="fa-solid fa-venus"></i>
+    </div>
+    
+    <h1 class="flow-title" style="font-family: var(--font-display); font-size: var(--text-3xl);">DIVENIC PUTRI</h1>
+    <p class="flow-subtitle" style="font-family: var(--font-story); font-style: italic; margin-bottom: var(--space-xl);">
+      "Halaman ini sedang dipersiapkan dan akan segera hadir menemani kisah kita."
+    </p>
+
+    <div class="divider" style="margin: var(--space-lg) auto; background: var(--peach);"></div>
+
+    <button id="btn-back" class="flow-btn" style="max-width: 240px; background: var(--slate); box-shadow: none;">
+      <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i> Kembali ke Pemilihan
+    </button>
+  </div>
+
+  <script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('btn-back').addEventListener('click', () => {
+        window.location.href = 'gender.html';
+      });
+    });
+  </script>
+
+</body>
+
+</html>

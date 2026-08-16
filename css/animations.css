@@ -1,0 +1,42 @@
+/* ============================================================
+   DIVENIC — animations.css
+   Section reveal effects, card panel interaction, and transitions
+   ============================================================ */
+
+
+/* Hero reveal: quick fade without vertical shift */
+#hero [data-reveal] {
+  transform: none;
+  transition: opacity 0.8s ease;
+}
+
+/* Card grids: slide up */
+.member-grid [data-reveal],
+.mentor-grid [data-reveal] {
+  transform: translateY(32px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+/* Timeline items: slide in from sides */
+.timeline-item[data-reveal="left"] {
+  transform: translateX(-20px);
+}
+
+.timeline-item[data-reveal="right"] {
+  transform: translateX(20px);
+}
+
+.timeline-item[data-reveal="left"].revealed,
+.timeline-item[data-reveal="right"].revealed {
+  transform: translateX(0);
+}
+
+/* Memory wall: gentle scale up */
+.memory-card[data-reveal] {
+  transform: scale(0.95);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.memory-card[data-reveal].revealed {
+  transform: scale(1);
+}

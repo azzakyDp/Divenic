@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Divenic — Masuk ke Akun Anda.">
+  <title>Masuk — Divenic</title>
+  <link rel="icon" href="asset/logo.png" type="image/png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/flow.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+
+<body class="flow-body">
+
+  <div class="flow-container">
+    <img src="asset/logo.png" alt="Divenic Logo" class="flow-logo">
+    <h1 class="flow-title">MASUK</h1>
+    <p class="flow-subtitle">Kembali dan telusuri lembar kenangan</p>
+
+    <form id="login-form" class="flow-form" novalidate>
+      <div class="form-group" id="email-group">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" class="form-input" placeholder="nama@email.com" required>
+        <span class="validation-error" id="email-error">Masukkan email yang valid</span>
+      </div>
+
+      <div class="form-group" id="password-group">
+        <label for="password" class="form-label">Kata Sandi</label>
+        <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+        <span class="validation-error" id="password-error">Kata sandi minimal 6 karakter</span>
+      </div>
+
+      <div class="form-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="remember-me"> Ingat Saya
+        </label>
+        <a href="#" class="flow-link" id="forgot-password-link">Lupa Sandi?</a>
+      </div>
+
+      <div style="margin-top: var(--space-md);">
+        <span class="validation-error" id="general-error" style="text-align: center; margin-bottom: 8px;">Email atau kata sandi salah</span>
+      </div>
+
+      <div class="wizard-buttons" style="margin-top: var(--space-md);">
+        <button type="button" id="btn-back" class="flow-btn secondary" style="flex: 1;">Kembali</button>
+        <button type="submit" class="flow-btn" style="flex: 1.5;">Masuk</button>
+      </div>
+    </form>
+  </div>
+
+  <script type="module">
+    import { setSession } from './js/services/session.service.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('login-form');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const btnBack = document.getElementById('btn-back');
+      const forgotLink = document.getElementById('forgot-password-link');
+
+      // Back to landing
+      btnBack.addEventListener('click', () => {
+        window.location.href = 'landing.html';
+      });
+
+      forgotLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('Fitur Reset Kata Sandi belum tersedia (Mockup). Hubungi admin kelas Anda!');
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Basic reset
+        document.querySelectorAll('.form-group').forEach(g => g.classList.remove('has-error'));
+        document.getElementById('general-error').style.display = 'none';
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        let hasError = false;
+
+        // Validation
+        if (!email || !email.includes('@')) {
+          document.getElementById('email-group').classList.add('has-error');
+          hasError = true;
+        }
+
+        if (!password || password.length < 6) {
+          document.getElementById('password-group').classList.add('has-error');
+          hasError = true;
+        }
+
+        if (hasError) return;
+
+        // Mock verification
+        // Check registered users from localStorage
+        const users = JSON.parse(localStorage.getItem('divenic_mock_users') || '[]');
+        const matchedUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+        // Default credentials as fallback
+        const isDefault = (email.toLowerCase() === 'admin@divenic.com' && password === 'password') || 
+                          (email.toLowerCase() === 'guest@divenic.com' && password === 'password');
+
+        if (matchedUser && matchedUser.password === password) {
+          // Logged in with registered account
+          setSession({
+            mode: 'account',
+            gender: matchedUser.gender,
+            memberId: matchedUser.memberId,
+            nickname: matchedUser.nickname
+          });
+          window.location.href = 'gender.html';
+        } else if (isDefault) {
+          // Logged in with default mock account
+          const isGuestAccount = email.toLowerCase() === 'guest@divenic.com';
+          setSession({
+            mode: isGuestAccount ? 'guest' : 'account',
+            gender: 'male',
+            memberId: isGuestAccount ? null : 'member-001',
+            nickname: isGuestAccount ? 'Tamu' : 'Fachri'
+          });
+          window.location.href = 'gender.html';
+        } else if (email && password) {
+          // For ease of testing: if it's any other non-empty email/password, let's treat it as a temporary mock login
+          setSession({
+            mode: 'account',
+            gender: 'male', // Default to male for selection
+            memberId: null, // Let them choose in member selection
+            nickname: email.split('@')[0]
+          });
+          window.location.href = 'gender.html';
+        } else {
+          document.getElementById('general-error').style.display = 'block';
+        }
+      });
+    });
+  </script>
+
+</body>
+
+</html>

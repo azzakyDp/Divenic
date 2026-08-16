@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selamat Datang — Divenic</title>
+  <link rel="icon" href="asset/logo.png" type="image/png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/flow.css">
+</head>
+
+<body class="flow-body" style="background: var(--slate); overflow: hidden;">
+
+  <!-- Guard Redirect Script -->
+  <script type="module">
+    import { guardSession } from './js/services/session.service.js';
+    guardSession('gender', 'gender.html');
+  </script>
+
+  <div class="flow-container intro-container">
+    <svg class="intro-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg">
+      <text class="intro-text-draw" x="50%" y="55%">
+        WELCOME TO DIVENIC
+      </text>
+    </svg>
+  </div>
+
+  <script type="module">
+    import { markIntroCompleted } from './js/services/intro.service.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Auto redirect to home page after animation finishes
+      setTimeout(() => {
+        // Fade out page body smoothly first
+        document.body.style.transition = 'opacity 0.6s ease';
+        document.body.style.opacity = '0';
+
+        setTimeout(() => {
+          markIntroCompleted();
+          window.location.href = 'index.html';
+        }, 600);
+      }, 2400); // Redirect matches animation length (2.5s)
+    });
+  </script>
+
+</body>
+
+</html>

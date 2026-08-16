@@ -1,0 +1,125 @@
+/* ============================================================
+   DIVENIC — loading.css
+   Style untuk loading screen intro
+   ============================================================ */
+
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--color-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#loading-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-inner {
+  text-align: center;
+}
+
+.loading-logo {
+  height: 60px;
+  width: auto;
+  margin-bottom: 1rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-tagline {
+  font-family: var(--font-story);
+  font-size: var(--text-base);
+  color: var(--color-accent);
+  letter-spacing: 0.1em;
+  margin-top: 0.5rem;
+}
+
+.loading-bar {
+  width: 180px;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 99px;
+  margin: 1.5rem auto 0;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 100%;
+  background: var(--color-accent);
+  border-radius: 99px;
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: loadBar 2s ease forwards;
+}
+
+@keyframes loadBar {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(0.97);
+  }
+}
+
+/* ── Intro Animation ─────────────────────────── */
+#intro {
+  position: fixed;
+  inset: 0;
+  background: var(--intro-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-intro);
+  pointer-events: none;
+}
+
+.intro-svg {
+  width: min(90vw, 700px);
+  height: auto;
+  overflow: visible;
+}
+
+.intro-text {
+  font: 700 clamp(5rem, 20vw, 15rem) var(--font-story);
+  fill: transparent;
+  stroke: var(--blush);
+  stroke-width: 1.5;
+  stroke-dasharray: 0 100%;
+  stroke-dashoffset: 0;
+  animation: draw-text 2.5s var(--ease-out) forwards 0.3s;
+}
+
+@keyframes draw-text {
+  0% {
+    stroke-dasharray: 0 100%;
+    fill: transparent;
+  }
+
+  60% {
+    stroke-dasharray: 100% 0;
+    fill: transparent;
+  }
+
+  100% {
+    stroke-dasharray: 100% 0;
+    fill: rgba(255, 224, 181, 0.95);
+    stroke-width: 0;
+  }
+}

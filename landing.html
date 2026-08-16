@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Divenic — Digital Yearbook & Arsip Kenangan. Silakan masuk atau jelajahi sebagai tamu.">
+  <title>Selamat Datang — Divenic</title>
+  <link rel="icon" href="asset/logo.png" type="image/png">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/flow.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+
+<body class="flow-body">
+
+  <div class="flow-container">
+    <img src="asset/logo.png" alt="Divenic Logo" class="flow-logo">
+    <h1 class="flow-title">DIVENIC</h1>
+    <p class="flow-subtitle">Buku Tahunan Digital & Arsip Kenangan</p>
+
+    <div style="display: flex; flex-direction: column; gap: var(--space-md); margin-top: var(--space-xl);">
+      <button id="btn-login" class="flow-btn">
+        <i class="fa-solid fa-right-to-bracket" style="margin-right: 8px;"></i> Masuk ke Akun
+      </button>
+      
+      <button id="btn-register" class="flow-btn secondary">
+        <i class="fa-solid fa-user-plus" style="margin-right: 8px;"></i> Daftar Baru
+      </button>
+
+      <button id="btn-guest" class="flow-btn text-only">
+        Jelajahi sebagai Tamu <i class="fa-solid fa-arrow-right" style="margin-left: 4px;"></i>
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { setSession, clearSession } from './js/services/session.service.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Clear any stale sessions
+      clearSession();
+
+      const btnLogin = document.getElementById('btn-login');
+      const btnRegister = document.getElementById('btn-register');
+      const btnGuest = document.getElementById('btn-guest');
+
+      btnLogin.addEventListener('click', () => {
+        window.location.href = 'login.html';
+      });
+
+      btnRegister.addEventListener('click', () => {
+        window.location.href = 'register.html';
+      });
+
+      btnGuest.addEventListener('click', () => {
+        setSession({ mode: 'guest' });
+        window.location.href = 'gender.html';
+      });
+    });
+  </script>
+
+</body>
+
+</html>

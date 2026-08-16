@@ -1,0 +1,149 @@
+/* ============================================================
+   DIVENIC — footer.css
+   Dark footer: logo square + desc kiri, nav kanan, copyright bar
+   ============================================================ */
+
+.site-footer {
+  background: #1a1a1a;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: auto;
+}
+
+.footer-inner {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 3rem;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 3rem var(--space-lg) 2.5rem;
+  align-items: start;
+}
+
+/* ── Kolom kiri: brand ───────────────────────── */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Kotak "D" — mirip gambar referensi */
+.footer-logo-box {
+  width: 44px;
+  height: 44px;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: white;
+  flex-shrink: 0;
+  letter-spacing: -0.03em;
+}
+
+.footer-logo-box img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.footer-wordmark {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-wordmark-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  line-height: 1.1;
+}
+
+.footer-wordmark-sub {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  margin-top: 2px;
+}
+
+.footer-desc {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.65;
+  max-width: 280px;
+}
+
+/* ── Kolom kanan: nav ────────────────────────── */
+.footer-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-nav-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 12px;
+}
+
+.footer-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-link {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: white;
+}
+
+/* ── Copyright bar ───────────────────────────── */
+.footer-copy-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1rem var(--space-lg);
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.footer-copy {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  text-align: left;
+}
+
+/* ── Mobile ──────────────────────────────────── */
+@media (max-width: 640px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2.5rem var(--space-lg) 2rem;
+  }
+
+  .footer-desc {
+    max-width: 100%;
+  }
+
+  .footer-copy-bar {
+    padding: 1rem var(--space-lg);
+  }
+}

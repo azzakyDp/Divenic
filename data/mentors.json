@@ -1,0 +1,125 @@
+[
+  {
+    "id": "mentor-001",
+    "nickname": "ust. angga",
+    "name": "Ust. Angga W.W",
+    "role": "Kepala Sekolah MA DAFI",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835300/ustadz_nepnrq.webp"
+  },
+  {
+    "id": "mentor-002",
+    "nickname": "ust. sugi'",
+    "name": "Ust. Sugiarto",
+    "role": "Ketua Asrama",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835293/ustadz_3_syzomn.webp"
+  },
+  {
+    "id": "mentor-003",
+    "nickname": "ust. taufiq",
+    "name": "Ust. M. Taufiq",
+    "role": "Penjamin Mutu Tahfidz MA",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835291/ustadz_11_z5tyva.webp"
+  },
+  {
+    "id": "mentor-004",
+    "nickname": "alm ust. mukarromin",
+    "name": "Alm Ust. M. Mukarromin",
+    "role": "Wali Kelas X AGAMA",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835287/ustadz_5_qohv9a.webp"
+  },
+  {
+    "id": "mentor-005",
+    "nickname": "ust. ziyad",
+    "name": "Ust. Ziyadus Sholih",
+    "role": "Wali Kelas XI IPA",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835294/ustadz_15_e3quna.webp"
+  },
+  {
+    "id": "mentor-006",
+    "nickname": "ust. muaffi",
+    "name": "Ust. M. Muaffi",
+    "role": "Wali Kelas XII AGAMA",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-007",
+    "nickname": "ust. khafidz",
+    "name": "Ust. Khafidz A",
+    "role": "Wali Kelas X - XI IPA",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835292/ustadz_4_jcjnfp.webp"
+  },
+  {
+    "id": "mentor-008",
+    "nickname": "ust. deni",
+    "name": "Ust. Deni F.R",
+    "role": "Wali Kelas XII IPA",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-009",
+    "nickname": "ust. ",
+    "name": "Ust. ",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-005",
+    "name": "Nama Mentor",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-005",
+    "name": "Nama Mentor",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-005",
+    "name": "Nama Mentor",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-005",
+    "name": "Nama Mentor",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-005",
+    "name": "Nama Mentor",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-005",
+    "name": "Nama Mentor",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-005",
+    "name": "Nama Mentor",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-005",
+    "name": "Nama Mentor",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-005",
+    "name": "Nama Mentor",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  },
+  {
+    "id": "mentor-005",
+    "name": "Nama Mentor",
+    "role": "Wali Kelas / Pembimbing",
+    "avatar": "https://res.cloudinary.com/dzbvomjmq/image/upload/v1781835288/ustadz_6_sfriff.webp"
+  }
+]

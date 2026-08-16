@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Divenic</title>
+  <link rel="icon" href="asset/logo.png" type="image/png">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    body {
+      position: relative;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: var(--space-xl);
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+
+    .black-wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100dvh;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 1;
+    }
+
+    .error-wrap {
+      max-width: 480px;
+      padding: var(--space-lg);
+    }
+
+    .error-code {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 20vw, 10rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--warm-white);
+      -webkit-text-stroke: 2px var(--copper);
+      margin-bottom: var(--space-md);
+    }
+
+    .error-title {
+      font-size: var(--text-2xl);
+      color: var(--light-grey);
+      margin-bottom: var(--space-md);
+    }
+
+    .error-desc {
+      font-family: var(--font-story);
+      font-style: italic;
+      color: var(--light-grey);
+      margin-bottom: var(--space-2xl);
+      line-height: 1.7;
+    }
+
+    .error-back {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-xl);
+      background: var(--copper);
+      color: var(--cream);
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: var(--text-base);
+      transition: background var(--duration-fast), transform var(--duration-fast);
+    }
+
+    .error-back:hover {
+      background: var(--rust);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+
+<body>
+  <section class="black-wrap">
+    <div class="error-wrap">
+      <div class="error-code" aria-hidden="true">404</div>
+      <h2 class="error-title">Halaman Tidak Ditemukan</h1>
+        <p class="error-desc">
+          Maaf, halaman ini tak lagi ditemukan, tapi kita pernah berjalan di jejak yang sama.
+          <br>Tak semua kisah harus terus dilanjutkan, Sebab ada yang tinggal sebagai cerita lama.
+        </p>
+        <a href="index.html" class="error-back">
+          <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+        </a>
+    </div>
+  </section>
+
+  <script type="module">
+    import { getBackground } from './js/services/cloudinary.service.js';
+    document.body.style.backgroundImage = `url(${getBackground('v1783069361/dafi-bg_r3ym2d.webp')})`;
+  </script>
+</body>
+
+</html>
