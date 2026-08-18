@@ -17,3 +17,13 @@ export const registerLimiter = rateLimit({
   max: 10,
   message: { error: 'too_many_requests', retryAfter: '1 jam' },
 });
+
+// Endpoint verify birthdate: max 10 percobaan per 1 menit per IP untuk mencegah brute-force
+export const verifyBirthdateLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 menit
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { match: false, error: 'too_many_requests' },
+});
+

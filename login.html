@@ -11,7 +11,9 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/global.css">
@@ -30,15 +32,15 @@
 
     <form id="login-form" class="flow-form" novalidate>
       <div class="form-group" id="email-group">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" id="email" class="form-input" placeholder="nama@email.com" required>
-        <span class="validation-error" id="email-error">Masukkan email yang valid</span>
+        <label for="email" class="form-label">Email / Nickname</label>
+        <input type="text" id="email" class="form-input" placeholder="nama@email.com atau nickname" required>
+        <span class="validation-error" id="email-error">Masukkan email atau nickname yang valid</span>
       </div>
 
       <div class="form-group" id="password-group">
         <label for="password" class="form-label">Kata Sandi</label>
         <input type="password" id="password" class="form-input" placeholder="••••••••" required>
-        <span class="validation-error" id="password-error">Kata sandi minimal 6 karakter</span>
+        <span class="validation-error" id="password-error">Masukkan kata sandi</span>
       </div>
 
       <div class="form-row">
@@ -49,7 +51,8 @@
       </div>
 
       <div style="margin-top: var(--space-md);">
-        <span class="validation-error" id="general-error" style="text-align: center; margin-bottom: 8px;">Email atau kata sandi salah</span>
+        <span class="validation-error" id="general-error" style="text-align: center; margin-bottom: 8px;">Email/nickname
+          atau kata sandi salah</span>
       </div>
 
       <div class="wizard-buttons" style="margin-top: var(--space-md);">
@@ -60,6 +63,7 @@
   </div>
 
   <script type="module">
+    import { API_BASE } from './js/utils.js';
     import { setSession } from './js/services/session.service.js';
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -68,6 +72,7 @@
       const passwordInput = document.getElementById('password');
       const btnBack = document.getElementById('btn-back');
       const forgotLink = document.getElementById('forgot-password-link');
+      const generalError = document.getElementById('general-error');
 
       // Back to landing
       btnBack.addEventListener('click', () => {
@@ -76,72 +81,92 @@
 
       forgotLink.addEventListener('click', (e) => {
         e.preventDefault();
-        alert('Fitur Reset Kata Sandi belum tersedia (Mockup). Hubungi admin kelas Anda!');
+        alert('Fitur Reset Kata Sandi belum tersedia. Hubungi admin kelas Anda!');
       });
 
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Basic reset
+        // Reset error states
         document.querySelectorAll('.form-group').forEach(g => g.classList.remove('has-error'));
-        document.getElementById('general-error').style.display = 'none';
+        if (generalError) generalError.style.display = 'none';
 
-        const email = emailInput.value.trim();
+        const identifier = emailInput.value.trim();
         const password = passwordInput.value;
         let hasError = false;
 
-        // Validation
-        if (!email || !email.includes('@')) {
+        if (!identifier) {
           document.getElementById('email-group').classList.add('has-error');
           hasError = true;
         }
 
-        if (!password || password.length < 6) {
+        if (!password) {
           document.getElementById('password-group').classList.add('has-error');
           hasError = true;
         }
 
         if (hasError) return;
 
-        // Mock verification
-        // Check registered users from localStorage
-        const users = JSON.parse(localStorage.getItem('divenic_mock_users') || '[]');
-        const matchedUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+        try {
+          const response = await fetch(`${API_BASE}/auth/login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ identifier, password })
+          });
 
-        // Default credentials as fallback
-        const isDefault = (email.toLowerCase() === 'admin@divenic.com' && password === 'password') || 
-                          (email.toLowerCase() === 'guest@divenic.com' && password === 'password');
+          const data = await response.json();
 
-        if (matchedUser && matchedUser.password === password) {
-          // Logged in with registered account
-          setSession({
-            mode: 'account',
-            gender: matchedUser.gender,
-            memberId: matchedUser.memberId,
-            nickname: matchedUser.nickname
-          });
-          window.location.href = 'gender.html';
-        } else if (isDefault) {
-          // Logged in with default mock account
-          const isGuestAccount = email.toLowerCase() === 'guest@divenic.com';
-          setSession({
-            mode: isGuestAccount ? 'guest' : 'account',
-            gender: 'male',
-            memberId: isGuestAccount ? null : 'member-001',
-            nickname: isGuestAccount ? 'Tamu' : 'Fachri'
-          });
-          window.location.href = 'gender.html';
-        } else if (email && password) {
-          // For ease of testing: if it's any other non-empty email/password, let's treat it as a temporary mock login
-          setSession({
-            mode: 'account',
-            gender: 'male', // Default to male for selection
-            memberId: null, // Let them choose in member selection
-            nickname: email.split('@')[0]
-          });
-          window.location.href = 'gender.html';
-        } else {
-          document.getElementById('general-error').style.display = 'block';
+          if (response.ok) {
+            try {
+              const meRes = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
+              const meData = await meRes.json();
+
+              if (meRes.ok && meData.gender) {
+                setSession({
+                  mode: 'account',
+                  gender: meData.gender,
+                  memberId: meData.memberId || null,
+                  nickname: meData.name || ''
+                });
+
+                if (meData.gender === 'male') {
+                  window.location.href = 'loading.html';
+                } else if (meData.gender === 'female') {
+                  window.location.href = 'coming-soon.html';
+                } else {
+                  generalError.textContent = 'Data profil member tidak valid.';
+                  generalError.style.display = 'block';
+                }
+              } else {
+                generalError.textContent = 'Gagal memuat data profil member.';
+                generalError.style.display = 'block';
+              }
+            } catch (meErr) {
+              console.error('Error fetching profile after login:', meErr);
+              generalError.textContent = 'Gagal terhubung ke server saat memuat data profil.';
+              generalError.style.display = 'block';
+            }
+          } else if (response.status === 401 || response.status === 423) {
+            if (response.status === 423 || data.error === 'locked') {
+              generalError.textContent = data.message || `Akun terkunci. Coba lagi dalam ${data.minutesLeft || 30} menit.`;
+            } else {
+              generalError.textContent = data.message || 'Email/nickname atau kata sandi salah';
+            }
+            generalError.style.display = 'block';
+          } else if (response.status >= 500) {
+            generalError.textContent = 'Terjadi kesalahan server, coba lagi nanti';
+            generalError.style.display = 'block';
+          } else {
+            generalError.textContent = data.message || 'Terjadi kesalahan. Silakan coba lagi.';
+            generalError.style.display = 'block';
+          }
+        } catch (err) {
+          console.error('Error during login:', err);
+          generalError.textContent = 'Tidak dapat terhubung ke server';
+          generalError.style.display = 'block';
         }
       });
     });

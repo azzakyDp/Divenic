@@ -1,7 +1,4 @@
-/* ============================================================
-   DIVENIC — session.service.js
-   Manages user/guest session state in sessionStorage
-   ============================================================ */
+import { API_BASE } from '../utils.js';
 
 const KEY = 'divenic_session';
 
@@ -53,10 +50,57 @@ export function bindLogoutHandler() {
  * @param {string} key - Session state key to validate
  * @param {string} redirect - Destination page URL
  */
-export function guardSession(key = 'gender', redirect = 'landing.html') {
+export async function guardSession(key = 'gender', redirect = 'landing.html') {
   const session = getSession();
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-  if (!session[key] && currentPath !== redirect) {
-    window.location.replace(redirect);
+
+  // 1. Cek dulu sessionStorage: jika mode === 'guest' DAN gender === 'male', izinkan
+  if (session.mode === 'guest' && session.gender === 'male') {
+    return;
+  }
+
+  // 2. Cek jika guard berbasis 'mode' (misalnya gender.html)
+  if (key === 'mode') {
+    if (!session.mode && currentPath !== redirect) {
+      window.location.replace(redirect);
+    }
+    return;
+  }
+
+  // 3. Verifikasi sesi backend via GET /api/auth/me
+  try {
+    const res = await fetch(`${API_BASE}/auth/me`, { credentials: 'include' });
+    const data = await res.json();
+
+    if (res.ok && data.gender) {
+      setSession({
+        mode: 'account',
+        gender: data.gender,
+        memberId: data.memberId || null,
+        nickname: data.name || ''
+      });
+
+      if (data.gender === 'female') {
+        if (currentPath !== 'coming-soon.html') {
+          window.location.replace('coming-soon.html');
+        }
+        return;
+      }
+
+      if (data.gender === 'male') {
+        return;
+      }
+    }
+
+    if (data && data.gender === 'female') {
+      window.location.replace('coming-soon.html');
+    } else if (currentPath !== redirect) {
+      window.location.replace(redirect);
+    }
+  } catch (err) {
+    console.error('[SessionGuard] Auth check error:', err);
+    if (currentPath !== redirect) {
+      window.location.replace(redirect);
+    }
   }
 }

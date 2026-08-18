@@ -20,7 +20,7 @@ export async function fetchData(path) {
     return jsonCache.get(path);
   }
   try {
-    const res = await fetch(path);
+    const res = await fetch(path, { credentials: 'include' });
     if (!res.ok) throw new Error(`Failed to fetch ${path}: ${res.status}`);
     const data = await res.json();
     jsonCache.set(path, data);

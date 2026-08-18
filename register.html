@@ -37,6 +37,7 @@
       <div class="progress-step" data-step="3">3</div>
       <div class="progress-step" data-step="4">4</div>
       <div class="progress-step" data-step="5">5</div>
+      <div class="progress-step" data-step="6">6</div>
     </div>
 
     <form id="register-form" class="flow-form" novalidate>
@@ -88,8 +89,92 @@
         </div>
       </div>
 
-      <!-- STEP 4: Email & Nickname -->
+      <!-- STEP 4: Birthdate Verification -->
       <div class="wizard-step" id="step-4">
+        <div class="form-group" id="birthdate-group">
+          <label class="form-label">Verifikasi Tanggal Lahir</label>
+          <p style="font-size: 12px; color: var(--mid-grey); margin-bottom: 8px;">Pilih tanggal lahir Anda untuk
+            memverifikasi kepemilikan akun member:</p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1.3fr 1.1fr; gap: 8px; margin-top: 8px;">
+            <select id="birth-day" class="form-input" required>
+              <option value="" disabled selected>Tanggal</option>
+              <option value="01">01</option>
+              <option value="02">02</option>
+              <option value="03">03</option>
+              <option value="04">04</option>
+              <option value="05">05</option>
+              <option value="06">06</option>
+              <option value="07">07</option>
+              <option value="08">08</option>
+              <option value="09">09</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+              <option value="21">21</option>
+              <option value="22">22</option>
+              <option value="23">23</option>
+              <option value="24">24</option>
+              <option value="25">25</option>
+              <option value="26">26</option>
+              <option value="27">27</option>
+              <option value="28">28</option>
+              <option value="29">29</option>
+              <option value="30">30</option>
+              <option value="31">31</option>
+            </select>
+
+            <select id="birth-month" class="form-input" required>
+              <option value="" disabled selected>Bulan</option>
+              <option value="01">Januari</option>
+              <option value="02">Februari</option>
+              <option value="03">Maret</option>
+              <option value="04">April</option>
+              <option value="05">Mei</option>
+              <option value="06">Juni</option>
+              <option value="07">Juli</option>
+              <option value="08">Agustus</option>
+              <option value="09">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+
+            <select id="birth-year" class="form-input" required>
+              <option value="" disabled selected>Tahun</option>
+              <option value="2012">2012</option>
+              <option value="2011">2011</option>
+              <option value="2010">2010</option>
+              <option value="2009">2009</option>
+              <option value="2008">2008</option>
+              <option value="2007">2007</option>
+              <option value="2006">2006</option>
+              <option value="2005">2005</option>
+              <option value="2004">2004</option>
+              <option value="2003">2003</option>
+              <option value="2002">2002</option>
+              <option value="2001">2001</option>
+              <option value="2000">2000</option>
+              <option value="1999">1999</option>
+              <option value="1998">1998</option>
+              <option value="1996">1996</option>
+              <option value="1995">1995</option>
+            </select>
+          </div>
+          <span class="validation-error" id="birthdate-error">Tanggal lahir tidak cocok dengan data member</span>
+        </div>
+      </div>
+
+      <!-- STEP 5: Email & Nickname -->
+      <div class="wizard-step" id="step-5">
         <div class="form-group" id="email-reg-group" style="margin-bottom: var(--space-sm);">
           <label for="email-reg" class="form-label">Email Baru</label>
           <input type="email" id="email-reg" class="form-input" placeholder="nama@email.com" required>
@@ -102,12 +187,12 @@
         </div>
       </div>
 
-      <!-- STEP 5: Password & Confirmation -->
-      <div class="wizard-step" id="step-5">
+      <!-- STEP 6: Password & Confirmation -->
+      <div class="wizard-step" id="step-6">
         <div class="form-group" id="pass-reg-group" style="margin-bottom: var(--space-sm);">
           <label for="pass-reg" class="form-label">Kata Sandi</label>
-          <input type="password" id="pass-reg" class="form-input" placeholder="Minimal 6 karakter" required>
-          <span class="validation-error" id="pass-reg-error">Kata sandi minimal 6 karakter</span>
+          <input type="password" id="pass-reg" class="form-input" placeholder="Minimal 8 karakter" required>
+          <span class="validation-error" id="pass-reg-error">Kata sandi minimal 8 karakter</span>
         </div>
         <div class="form-group" id="confirm-reg-group">
           <label for="confirm-reg" class="form-label">Konfirmasi Kata Sandi</label>
@@ -139,7 +224,7 @@
       const btnCancel = document.getElementById('btn-cancel');
 
       let currentStep = 1;
-      const totalSteps = 5;
+      const totalSteps = 6;
 
       // Selection state
       let selectedGender = '';
@@ -294,16 +379,20 @@
       }
 
       function selectMember(cardElement, id, name, nickname) {
+        if (id === 'guest') {
+          if (confirm('Lanjutkan sebagai tamu? Proses pendaftaran akan dibatalkan.')) {
+            setSession({ mode: 'guest', memberId: null, nickname: 'Tamu' });
+            window.location.href = 'loading.html';
+          }
+          return;
+        }
+
         selectedMemberId = id;
         selectedMemberName = name;
         document.getElementById('member-error').style.display = 'none';
 
-        // Auto fill nickname on step 4
-        if (id !== 'guest') {
-          document.getElementById('nickname').value = nickname;
-        } else {
-          document.getElementById('nickname').value = '';
-        }
+        // Auto fill nickname on step 5
+        document.getElementById('nickname').value = nickname;
 
         // Root Cause Fix (Langkah 1): Removed populateMembers() full DOM teardown call on click.
         // Using O(1) activeCardElement direct memory tracking to toggle class 'active' on mutated nodes only.
@@ -323,8 +412,8 @@
         }
       });
 
-      btnNext.addEventListener('click', () => {
-        if (validateStep(currentStep)) {
+      btnNext.addEventListener('click', async () => {
+        if (await validateStep(currentStep)) {
           if (currentStep < totalSteps) {
             goToStep(currentStep + 1);
           } else {
@@ -356,13 +445,14 @@
           1: 'Daftarkan akun untuk mengakses yearbook Anda',
           2: 'Pilih jenis kelamin untuk memandu visual yearbook',
           3: 'Tautkan identitas member Anda',
-          4: 'Pilih email dan nama panggilan Anda',
-          5: 'Buat kata sandi yang aman'
+          4: 'Verifikasi tanggal lahir untuk keamanan akun',
+          5: 'Pilih email dan nama panggilan Anda',
+          6: 'Buat kata sandi yang aman'
         };
         document.getElementById('wizard-subtitle').textContent = subtitles[currentStep] || '';
       }
 
-      function validateStep(step) {
+      async function validateStep(step) {
         // Reset errors
         document.querySelectorAll('.form-group').forEach(g => g.classList.remove('has-error'));
         document.querySelectorAll('.validation-error').forEach(e => e.style.display = 'none');
@@ -391,6 +481,43 @@
         }
 
         if (step === 4) {
+          const day = document.getElementById('birth-day').value;
+          const month = document.getElementById('birth-month').value;
+          const year = document.getElementById('birth-year').value;
+
+          if (!day || !month || !year) {
+            document.getElementById('birthdate-group').classList.add('has-error');
+            document.getElementById('birthdate-error').textContent = 'Harap pilih tanggal, bulan, dan tahun lahir Anda';
+            document.getElementById('birthdate-error').style.display = 'block';
+            return false;
+          }
+
+          const birthday = `${year}-${month}-${day}`;
+          try {
+            const response = await fetch(`${API_BASE}/auth/verify-birthdate`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ memberId: selectedMemberId, birthday })
+            });
+            const res = await response.json();
+
+            if (!res || !res.match) {
+              document.getElementById('birthdate-group').classList.add('has-error');
+              document.getElementById('birthdate-error').textContent = 'Tanggal lahir tidak cocok dengan data member';
+              document.getElementById('birthdate-error').style.display = 'block';
+              return false;
+            }
+          } catch (err) {
+            console.error('Error verifying birthdate:', err);
+            document.getElementById('birthdate-group').classList.add('has-error');
+            document.getElementById('birthdate-error').textContent = 'Gagal memverifikasi tanggal lahir. Silakan coba lagi.';
+            document.getElementById('birthdate-error').style.display = 'block';
+            return false;
+          }
+        }
+
+        if (step === 5) {
           const email = document.getElementById('email-reg').value.trim();
           const nickname = document.getElementById('nickname').value.trim();
           let hasErr = false;
@@ -400,15 +527,6 @@
             document.getElementById('email-reg-error').textContent = 'Masukkan email yang valid';
             document.getElementById('email-reg-error').style.display = 'block';
             hasErr = true;
-          } else {
-            // Check if email already registered
-            const users = JSON.parse(localStorage.getItem('divenic_mock_users') || '[]');
-            if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
-              document.getElementById('email-reg-group').classList.add('has-error');
-              document.getElementById('email-reg-error').textContent = 'Email ini sudah terdaftar';
-              document.getElementById('email-reg-error').style.display = 'block';
-              hasErr = true;
-            }
           }
 
           if (!nickname) {
@@ -420,13 +538,14 @@
           if (hasErr) return false;
         }
 
-        if (step === 5) {
+        if (step === 6) {
           const pass = document.getElementById('pass-reg').value;
           const confirmPass = document.getElementById('confirm-reg').value;
           let hasErr = false;
 
-          if (!pass || pass.length < 6) {
+          if (!pass || pass.length < 8) {
             document.getElementById('pass-reg-group').classList.add('has-error');
+            document.getElementById('pass-reg-error').textContent = 'Kata sandi minimal 8 karakter';
             document.getElementById('pass-reg-error').style.display = 'block';
             hasErr = true;
           }
@@ -443,32 +562,65 @@
         return true;
       }
 
-      function submitRegistration() {
+      async function submitRegistration() {
         const email = document.getElementById('email-reg').value.trim();
         const nickname = document.getElementById('nickname').value.trim();
         const password = document.getElementById('pass-reg').value;
+        const memberId = (selectedMemberId && selectedMemberId !== 'guest') ? selectedMemberId : null;
 
-        // Save new user in mock storage
-        const users = JSON.parse(localStorage.getItem('divenic_mock_users') || '[]');
-        users.push({
-          email,
-          nickname,
-          password,
-          gender: selectedGender,
-          memberId: selectedMemberId === 'guest' ? null : selectedMemberId
-        });
-        localStorage.setItem('divenic_mock_users', JSON.stringify(users));
+        try {
+          const response = await fetch(`${API_BASE}/auth/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              memberId,
+              nickname,
+              email,
+              password
+            })
+          });
 
-        // Save session state
-        setSession({
-          mode: 'account',
-          gender: selectedGender,
-          memberId: selectedMemberId === 'guest' ? null : selectedMemberId,
-          nickname: nickname
-        });
+          const res = await response.json();
 
-        // Redirect to loading
-        window.location.href = 'loading.html';
+          if (!response.ok) {
+            if (res.error === 'nickname_taken') {
+              goToStep(5);
+              document.getElementById('nickname-group').classList.add('has-error');
+              document.getElementById('nickname-error').textContent = 'Nickname ini sudah terdaftar';
+              document.getElementById('nickname-error').style.display = 'block';
+              return;
+            } else if (res.error === 'email_taken') {
+              goToStep(5);
+              document.getElementById('email-reg-group').classList.add('has-error');
+              document.getElementById('email-reg-error').textContent = 'Email ini sudah terdaftar';
+              document.getElementById('email-reg-error').style.display = 'block';
+              return;
+            } else if (res.error === 'password_too_short') {
+              goToStep(6);
+              document.getElementById('pass-reg-group').classList.add('has-error');
+              document.getElementById('pass-reg-error').textContent = 'Kata sandi minimal 8 karakter';
+              document.getElementById('pass-reg-error').style.display = 'block';
+              return;
+            }
+            alert('Gagal membuat akun');
+            return;
+          }
+
+          // Save session state
+          setSession({
+            mode: 'account',
+            gender: selectedGender,
+            memberId: memberId,
+            nickname: nickname
+          });
+
+          // Redirect to loading
+          window.location.href = 'loading.html';
+        } catch (err) {
+          console.error('Error registering user:', err);
+          alert('Terjadi kesalahan koneksi server');
+        }
       }
     });
   </script>

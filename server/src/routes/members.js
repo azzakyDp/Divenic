@@ -17,7 +17,6 @@ router.get('/', async (req, res) => {
         COALESCE(quote, '') AS quote,
         COALESCE(avatar, '') AS avatar,
         COALESCE(instagram, '') AS instagram,
-        TO_CHAR(birthday, 'YYYY-MM-DD') AS birthday,
         gender
       FROM members
       ORDER BY id ASC

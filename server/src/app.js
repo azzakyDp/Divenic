@@ -1,16 +1,16 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import helmet from 'helmet';
-import dotenv from 'dotenv';
+
 import authRoutes from './routes/auth.js';
 import eventsRoutes from './routes/events.js';
 import mentorsRoutes from './routes/mentors.js';
 import membersRoutes from './routes/members.js';
 import albumsRoutes from './routes/albums.js';
 import messagesRoutes from './routes/messages.js';
-
-dotenv.config();
+import profileRoutes from './routes/profile.js';
 
 const app = express();
 
@@ -35,6 +35,7 @@ app.use('/api/messages', messagesRoutes);
 app.use('/api/members', membersRoutes);
 app.use('/api/mentors', mentorsRoutes);
 app.use('/api/albums', albumsRoutes);
+app.use('/api/profile', profileRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server berjalan di port ${PORT}`));

@@ -15,10 +15,10 @@ async function applyDelay(attempts) {
   if (ms) await new Promise(r => setTimeout(r, ms));
 }
 
-export async function loginUser(nickname, password) {
-  // Ambil user — selalu query meskipun belum tahu apakah nickname ada
+export async function loginUser(identifier, password) {
+  // Ambil user — selalu query meskipun belum tahu apakah nickname/email ada
   const { rows } = await pool.query(
-    'SELECT * FROM users WHERE nickname = $1', [nickname]
+    'SELECT * FROM users WHERE nickname = $1 OR email = $1', [identifier]
   );
   const user = rows[0];
 
@@ -79,59 +79,36 @@ async function recordFailedAttempt(user) {
   return { attempts: newAttempts, warnAt: WARN_AT, maxAttempts: MAX_ATTEMPTS };
 }
 
-export async function validateMember(fullName, birthDate) {
-  const { rows } = await pool.query(
-    `SELECT id, full_name, gender FROM members
-     WHERE LOWER(full_name) = LOWER($1) AND birth_date = $2`,
-    [fullName.trim(), birthDate]
-  );
 
-  if (!rows[0]) return { error: 'member_not_found' };
-
-  // Cek apakah member ini sudah punya akun
-  const { rows: existing } = await pool.query(
-    'SELECT id FROM users WHERE member_id = $1', [rows[0].id]
-  );
-  if (existing[0]) return { error: 'already_registered' };
-
-  // Buat step-token sementara (10 menit)
-  const stepToken = jwt.sign(
-    { memberId: rows[0].id, gender: rows[0].gender, step: 'register' },
-    process.env.JWT_SECRET,
-    { expiresIn: '10m' }
-  );
-
-  return { stepToken, gender: rows[0].gender, fullName: rows[0].full_name };
-}
-
-export async function registerUser(nickname, password, stepToken) {
-  // Verifikasi step-token masih valid
-  let payload;
-  try {
-    payload = jwt.verify(stepToken, process.env.JWT_SECRET);
-  } catch {
-    return { error: 'invalid_step_token' };
-  }
-
-  if (payload.step !== 'register') return { error: 'invalid_step_token' };
-
+export async function registerUser(nickname, email, password, memberId = null) {
   // Cek nickname belum dipakai
-  const { rows: existing } = await pool.query(
+  const { rows: existingNickname } = await pool.query(
     'SELECT id FROM users WHERE nickname = $1', [nickname]
   );
-  if (existing[0]) return { error: 'nickname_taken' };
+  if (existingNickname[0]) return { error: 'nickname_taken' };
+
+  // Cek email belum dipakai
+  if (email) {
+    const { rows: existingEmail } = await pool.query(
+      'SELECT id FROM users WHERE email = $1', [email]
+    );
+    if (existingEmail[0]) return { error: 'email_taken' };
+  }
 
   // Hash password
   const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
   // Tentukan role berdasarkan apakah ada member_id
-  const role = payload.memberId ? 'member' : 'visitor';
+  const role = memberId ? 'member' : 'visitor';
 
   const { rows } = await pool.query(
-    `INSERT INTO users (member_id, nickname, password_hash, role)
-     VALUES ($1, $2, $3, $4) RETURNING id, role`,
-    [payload.memberId ?? null, nickname, passwordHash, role]
+    `INSERT INTO users (member_id, nickname, email, password_hash, role)
+     VALUES ($1, $2, $3, $4, $5) RETURNING id, role`,
+    [memberId ?? null, nickname, email ?? null, passwordHash, role]
   );
 
   return { userId: rows[0].id, role: rows[0].role };
 }
+
+
+

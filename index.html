@@ -74,9 +74,26 @@
       <li><a href="#mentors" class="nav-link">Mentor</a></li>
       <li><a href="#members" class="nav-link">Member</a></li>
       <li><a href="#album" class="nav-link">Galeri</a></li>
-      <li><button id="btn-logout" class="nav-link"
-          style="background:none; border:none; padding:0; cursor:pointer; font:inherit; display:flex; align-items:center; gap:6px; color:var(--slate);"><i
-            class="fa-solid fa-right-from-bracket"></i> Keluar</button></li>
+      <li class="nav-profile-item" style="position: relative;">
+        <button id="nav-profile-trigger" class="nav-profile-btn" aria-haspopup="true" aria-expanded="false"
+          style="background:none; border:none; padding:0; cursor:pointer; display:flex; align-items:center; gap:6px;">
+          <img id="nav-user-avatar" src="asset/icons/person.png" alt="Profil"
+            style="width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid var(--copper);" />
+          <i class="fa-solid fa-chevron-down" style="font-size:10px; color:var(--slate);"></i>
+        </button>
+        <div id="nav-profile-dropdown" class="nav-profile-dropdown"
+          style="display:none; position:absolute; right:0; top:calc(100% + 10px); background:var(--warm-white); border:1px solid var(--color-border); border-radius:var(--card-radius); box-shadow:var(--card-shadow); min-width:160px; z-index:1000; overflow:hidden; padding:6px 0;">
+          <a href="dashboard.html" class="nav-dropdown-item"
+            style="display:flex; align-items:center; gap:8px; padding:10px 16px; color:var(--charcoal); text-decoration:none; font-size:var(--text-sm); font-weight:600; transition:background 0.2s;">
+            <i class="fa-solid fa-user-gear" style="color:var(--copper);"></i> Dashboard
+          </a>
+          <div style="height:1px; background:var(--color-border); margin:4px 0;"></div>
+          <button id="btn-logout" class="nav-dropdown-item"
+            style="width:100%; display:flex; align-items:center; gap:8px; padding:10px 16px; color:var(--copper); background:none; border:none; cursor:pointer; font-size:var(--text-sm); font-weight:600; text-align:left;">
+            <i class="fa-solid fa-right-from-bracket"></i> Keluar
+          </button>
+        </div>
+      </li>
     </ul>
 
     <!-- Hamburger -->
@@ -96,6 +113,9 @@
     <a href="#mentors" class="mobile-nav-link">Mentor</a>
     <a href="#members" class="mobile-nav-link">Member</a>
     <a href="#album" class="mobile-nav-link">Galeri</a>
+    <a href="dashboard.html" class="mobile-nav-link" style="display:flex; align-items:center; gap:8px;">
+      <i class="fa-solid fa-user-gear" style="color: var(--copper);"></i> Dashboard
+    </a>
     <a href="#" id="btn-logout-mobile" class="mobile-nav-link"
       style="color: var(--copper); display:flex; align-items:center; gap:8px;"><i
         class="fa-solid fa-right-from-bracket"></i> Keluar</a>
@@ -401,6 +421,61 @@
 
       // Logout handler
       bindLogoutHandler();
+
+      // Navbar Profile Dropdown Toggle & Avatar Loader
+      const profileTrigger = document.getElementById('nav-profile-trigger');
+      const profileDropdown = document.getElementById('nav-profile-dropdown');
+      const userAvatarImg = document.getElementById('nav-user-avatar');
+
+      if (profileTrigger && profileDropdown) {
+        profileTrigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = profileDropdown.style.display === 'block';
+          profileDropdown.style.display = isOpen ? 'none' : 'block';
+          profileTrigger.setAttribute('aria-expanded', !isOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+          if (!profileDropdown.contains(e.target) && !profileTrigger.contains(e.target)) {
+            profileDropdown.style.display = 'none';
+            profileTrigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+
+      try {
+        const { API_BASE, fetchData } = await import('./js/utils.js');
+        const userAuth = await fetchData(`${API_BASE}/auth/me`);
+        if (userAuth && userAuth.avatar && userAvatarImg) {
+          userAvatarImg.src = userAuth.avatar;
+        }
+      } catch (e) {
+        const { getSession } = await import('./js/services/session.service.js');
+        const session = getSession();
+        const isGuest = session.mode === 'guest';
+
+        const dashboardLinkDesktop = profileDropdown?.querySelector('a[href="dashboard.html"]');
+        const dashboardDivider = dashboardLinkDesktop?.nextElementSibling;
+        const dashboardLinkMobile = document.querySelector('#mobile-menu a[href="dashboard.html"]');
+
+        if (isGuest) {
+          // Tamu: tidak punya profil member — sembunyikan Dashboard, avatar tetap generik
+          dashboardLinkDesktop?.style.setProperty('display', 'none');
+          dashboardDivider?.style.setProperty('display', 'none');
+          dashboardLinkMobile?.style.setProperty('display', 'none');
+        } else {
+          try {
+            const { API_BASE, fetchData } = await import('./js/utils.js');
+            const userAuth = await fetchData(`${API_BASE}/auth/me`);
+            if (userAuth && userAuth.avatar && userAvatarImg) {
+              userAvatarImg.src = userAuth.avatar;
+            }
+          } catch (e) {
+            console.error('Error loading navbar user avatar:', e);
+          }
+        }
+        console.error('Error loading navbar user avatar:', e);
+      }
 
       // Page features
       initCarousel();

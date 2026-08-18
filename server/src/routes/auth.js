@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { loginLimiter, registerLimiter } from '../middleware/rateLimiter.js';
-import { loginUser, validateMember, registerUser } from '../services/authService.js';
+import { loginLimiter, registerLimiter, verifyBirthdateLimiter } from '../middleware/rateLimiter.js';
+import { loginUser, registerUser } from '../services/authService.js';
 import { verifyToken } from '../middleware/auth.js';
+import pool from '../config/db.js';
 
 const router = Router();
 
@@ -13,85 +14,119 @@ const COOKIE_OPTIONS = {
   ...(process.env.COOKIE_DOMAIN ? { domain: process.env.COOKIE_DOMAIN } : {})
 };
 
-// POST /api/auth/validate-member — Step 1 register
-router.post('/validate-member', registerLimiter, async (req, res) => {
-  const { fullName, birthDate } = req.body;
-  if (!fullName || !birthDate)
-    return res.status(400).json({ error: 'missing_fields' });
-
-  const result = await validateMember(fullName, birthDate);
-  if (result.error) return res.status(400).json({ error: result.error });
-
-  res.json({ stepToken: result.stepToken, gender: result.gender, fullName: result.fullName });
-});
-
-// GET /api/members/names — Step 2: ambil daftar nama untuk dropdown (butuh step-token)
-router.get('/members/names', async (req, res) => {
-  // Verifikasi step-token dari header
-  const stepToken = req.headers['x-step-token'];
-  if (!stepToken) return res.status(401).json({ error: 'unauthorized' });
-
+// POST /api/auth/verify-birthdate — Validasi tanggal lahir member
+router.post('/verify-birthdate', verifyBirthdateLimiter, async (req, res) => {
   try {
-    const jwt = (await import('jsonwebtoken')).default;
-    jwt.verify(stepToken, process.env.JWT_SECRET);
-  } catch {
-    return res.status(401).json({ error: 'invalid_step_token' });
+    const { memberId, birthday } = req.body;
+    if (!memberId || !birthday || typeof birthday !== 'string') {
+      return res.status(400).json({ match: false });
+    }
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(birthday.trim())) {
+      return res.status(400).json({ match: false });
+    }
+
+    const query = `
+      SELECT id FROM members
+      WHERE id = $1 AND TO_CHAR(birthday, 'YYYY-MM-DD') = $2
+    `;
+    const { rows } = await pool.query(query, [memberId, birthday.trim()]);
+
+    if (rows.length > 0) {
+      return res.json({ match: true });
+    } else {
+      return res.json({ match: false });
+    }
+  } catch (err) {
+    console.error('Error verifying birthdate:', err);
+    return res.status(500).json({ match: false });
   }
-
-  // Hanya nama member yang belum punya akun
-  const { rows } = await (await import('../config/db.js')).default.query(
-    `SELECT m.id, m.full_name FROM members m
-     LEFT JOIN users u ON u.member_id = m.id
-     WHERE u.id IS NULL AND m.gender = 'male'
-     ORDER BY m.full_name`
-  );
-
-  res.json({ names: rows });
 });
+
 
 // POST /api/auth/register — Step 3 register
 router.post('/register', registerLimiter, async (req, res) => {
-  const { nickname, password, stepToken } = req.body;
-  if (!nickname || !password || !stepToken)
-    return res.status(400).json({ error: 'missing_fields' });
+  try {
+    const { memberId, nickname, email, password } = req.body;
+    if (!nickname || !password)
+      return res.status(400).json({ error: 'missing_fields' });
 
-  if (password.length < 8)
-    return res.status(400).json({ error: 'password_too_short' });
+    if (email && !email.includes('@'))
+      return res.status(400).json({ error: 'invalid_email' });
 
-  const result = await registerUser(nickname, password, stepToken);
-  if (result.error) return res.status(400).json({ error: result.error });
+    if (password.length < 8)
+      return res.status(400).json({ error: 'password_too_short' });
 
-  res.status(201).json({ message: 'Akun berhasil dibuat', role: result.role });
+    const result = await registerUser(nickname, email, password, memberId);
+    if (result.error) return res.status(400).json({ error: result.error });
+
+    res.status(201).json({ message: 'Akun berhasil dibuat', role: result.role });
+  } catch (err) {
+    console.error('Error registering user:', err);
+    return res.status(500).json({ error: 'server_error' });
+  }
 });
 
 // POST /api/auth/login
 router.post('/login', loginLimiter, async (req, res) => {
-  const { nickname, password } = req.body;
-  if (!nickname || !password)
-    return res.status(400).json({ error: 'missing_fields' });
+  try {
+    const { identifier, nickname, password } = req.body;
+    const userIdentifier = identifier || nickname;
 
-  const result = await loginUser(nickname, password);
+    if (!userIdentifier || !password)
+      return res.status(400).json({ error: 'missing_fields' });
 
-  if (result.error === 'locked')
-    return res.status(423).json({ error: 'locked', minutesLeft: result.minutesLeft });
+    const result = await loginUser(userIdentifier, password);
 
-  if (result.error)
-    return res.status(401).json({ error: 'invalid_credentials' }); // selalu sama
+    if (result.error === 'locked')
+      return res.status(423).json({ error: 'locked', minutesLeft: result.minutesLeft });
 
-  // Set JWT di HttpOnly cookie
-  res.cookie('token', result.token, COOKIE_OPTIONS);
-  res.json({ role: result.role });
+    if (result.error)
+      return res.status(401).json({ error: 'invalid_credentials' }); // selalu sama
+
+    // Set JWT di HttpOnly cookie
+    res.cookie('token', result.token, COOKIE_OPTIONS);
+    res.json({ role: result.role });
+  } catch (err) {
+    console.error('Error logging in user:', err);
+    return res.status(500).json({ error: 'server_error' });
+  }
 });
 
 // POST /api/auth/logout
 router.post('/logout', (req, res) => {
-  res.clearCookie('token', COOKIE_OPTIONS);
-  res.json({ message: 'Logout berhasil' });
+  try {
+    res.clearCookie('token', COOKIE_OPTIONS);
+    res.json({ message: 'Logout berhasil' });
+  } catch (err) {
+    console.error('Error logging out user:', err);
+    return res.status(500).json({ error: 'server_error' });
+  }
 });
 
-// GET /api/auth/me — cek apakah user masih login (untuk frontend redirect)
-router.get('/me', verifyToken, (req, res) => {
-  res.json({ userId: req.user.userId, role: req.user.role });
+// GET /api/auth/me — cek apakah user masih login (untuk frontend redirect & info avatar)
+router.get('/me', verifyToken, async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT u.id, u.role, u.member_id, m.name, m.nickname, m.avatar, m.gender
+       FROM users u
+       LEFT JOIN members m ON u.member_id = m.id
+       WHERE u.id = $1`,
+      [req.user.userId]
+    );
+    if (!rows[0]) return res.status(401).json({ error: 'unauthorized' });
+    const u = rows[0];
+    res.json({
+      userId: u.id,
+      role: u.role,
+      memberId: u.member_id,
+      name: u.name || u.nickname,
+      avatar: u.avatar || '',
+      gender: u.gender || ''
+    });
+  } catch (err) {
+    res.json({ userId: req.user.userId, role: req.user.role, gender: '' });
+  }
 });
 
 export default router;

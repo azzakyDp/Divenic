@@ -57,21 +57,8 @@
       const btnBack = document.getElementById('btn-back');
 
       cardMale.addEventListener('click', () => {
-        const session = getSession();
-
-        if (session.mode === 'guest') {
-          // Guest Mode: Skip member selection completely -> Go straight to loading.html -> main content
-          setSession({ gender: 'male', memberId: null, nickname: 'Tamu' });
-          window.location.href = 'loading.html';
-        } else if (session.mode === 'account' && session.memberId) {
-          // Member Account with linked memberId: Skip member selection -> Go straight to loading.html
-          setSession({ gender: 'male' });
-          window.location.href = 'loading.html';
-        } else {
-          // Account registration/login without linked memberId: Go to member selection
-          setSession({ gender: 'male' });
-          window.location.href = 'member-selection.html';
-        }
+        setSession({ mode: 'guest', gender: 'male', memberId: null, nickname: 'Tamu' });
+        window.location.href = 'loading.html';
       });
 
       cardFemale.addEventListener('click', () => {
