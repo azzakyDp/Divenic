@@ -1,7 +1,7 @@
 // js/guard.js
 import { isMember, getCurrentUser } from './services/auth.service.js';
 
-const API = 'http://localhost:3000/api';
+const API = '/api';
 
 export async function requireAuth() {
   // Local session check first

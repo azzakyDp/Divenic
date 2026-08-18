@@ -17,11 +17,22 @@ const app = express();
 // Security headers
 app.use(helmet());
 
-// CORS — izinkan hanya dari domain frontend
+// CORS — izinkan lokal dev & Vercel same-origin production
+const allowedOrigins = [
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
+];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? 'PLACEHOLDER_DOMAIN_PRODUCTION'
-    : ['http://localhost:5500', 'http://127.0.0.1:5500', 'http://localhost:3000', 'http://127.0.0.1:3000'],
+  origin: (origin, callback) => {
+    // Izinkan request same-origin (tanpa Origin header) atau yang terdaftar di dev whitelist / production
+    if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV === 'production') {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true,
 }));
 
@@ -36,8 +47,5 @@ app.use('/api/members', membersRoutes);
 app.use('/api/mentors', mentorsRoutes);
 app.use('/api/albums', albumsRoutes);
 app.use('/api/profile', profileRoutes);
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server berjalan di port ${PORT}`));
 
 export default app;
