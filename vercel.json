@@ -1,12 +1,10 @@
 {
   "version": 2,
-  "redirects": [
-    {
-      "src": "/",
-      "destination": "/landing.html"
-    }
-  ],
   "rewrites": [
+    {
+      "source": "/",
+      "destination": "/landing.html"
+    },
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"
