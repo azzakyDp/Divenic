@@ -1,14 +1,9 @@
-/* ============================================================
-   DIVENIC — RESPONSIVE CSS
-   Mobile-first breakpoints
-   ============================================================ */
-
-/* ── Base: mobile (< 480px) ─────────────────── */
-
+/* mobile < 480px */
 /* Navbar */
 .nav-links {
   display: none;
 }
+
 .nav-hamburger {
   display: flex;
 }
@@ -112,9 +107,11 @@
   .intro-text {
     animation-duration: 1.8s;
   }
+
   .slider-background {
     display: block;
   }
+
   .carousel {
     position: relative;
     width: 90%;
@@ -125,9 +122,11 @@
     overflow: hidden;
     box-shadow: var(--shadow-lg);
   }
+
   .carousel-slide img {
     object-fit: contain;
   }
+
   #hero {
     display: flex;
     align-items: center;
@@ -135,7 +134,7 @@
   }
 }
 
-/* ── Small tablet (≥ 480px) ──────────────────── */
+/* Small tablet ≥ 480px */
 @media (min-width: 480px) {
   .member-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -147,7 +146,7 @@
   }
 }
 
-/* ── Tablet (≥ 640px) ────────────────────────── */
+/* Tablet ≥ 640px */
 @media (min-width: 640px) {
   .about-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -174,8 +173,9 @@
   }
 }
 
-/* ── Desktop (≥ 900px) ───────────────────────── */
+/* Desktop ≥ 900px */
 @media (min-width: 900px) {
+
   /* Show desktop nav, hide hamburger */
   .nav-links {
     display: flex;
@@ -196,11 +196,20 @@
     padding-left: 0;
   }
 
-  .timeline-item:nth-child(odd) .timeline-media { order: 1; }
-  .timeline-item:nth-child(odd) .timeline-info  { order: 2; text-align: left; }
+  .timeline-item:nth-child(odd) .timeline-media {
+    order: 1;
+  }
 
-  .timeline-item:nth-child(even) .timeline-media { order: 2; }
-  .timeline-item:nth-child(even) .timeline-info  {
+  .timeline-item:nth-child(odd) .timeline-info {
+    order: 2;
+    text-align: left;
+  }
+
+  .timeline-item:nth-child(even) .timeline-media {
+    order: 2;
+  }
+
+  .timeline-item:nth-child(even) .timeline-info {
     order: 1;
     text-align: right;
   }
@@ -232,7 +241,7 @@
   }
 }
 
-/* ── Wide desktop (≥ 1200px) ────────────────── */
+/* Wide desktop ≥ 1200px*/
 @media (min-width: 1200px) {
   .container {
     padding: 0 var(--space-xl);
@@ -243,12 +252,13 @@
   }
 }
 
-/* ── Touch / pointer adjustments ───────────── */
+/* Touch / pointer adjustments */
 @media (hover: none) {
+
   /* Always show member overlay on touch devices */
   .member-card-overlay {
     opacity: 1;
-    background: linear-gradient(to top, rgba(49,78,82,0.7) 0%, transparent 60%);
+    background: linear-gradient(to top, rgba(49, 78, 82, 0.7) 0%, transparent 60%);
   }
 
   .photo-item-overlay {
@@ -256,7 +266,7 @@
   }
 }
 
-/* ── Landscape mobile ────────────────────────── */
+/* Landscape mobile */
 @media (max-height: 500px) and (orientation: landscape) {
   #hero {
     height: 100svh;

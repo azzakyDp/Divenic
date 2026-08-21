@@ -17,14 +17,12 @@
   <link rel="icon" href="asset/logo.png" type="image/png">
   <link rel="apple-touch-icon" href="asset/logo.png">
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap"
     rel="stylesheet">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/loading.css">
   <link rel="stylesheet" href="css/footer.css">
@@ -32,7 +30,6 @@
   <link rel="stylesheet" href="css/member.css">
   <link rel="stylesheet" href="css/responsive.css">
 
-  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
     crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -40,7 +37,7 @@
 
 <body>
 
-  <!-- ── Loading Screen ── -->
+  <!-- Loading Screen -->
   <div id="loading-screen" aria-hidden="true">
     <div class="loading-inner">
       <img src="asset/logo.png" alt="Divenic Logo" class="loading-logo">
@@ -51,7 +48,6 @@
     </div>
   </div>
 
-  <!-- ── Navbar ── -->
   <nav id="navbar" role="navigation" aria-label="Navigasi utama">
     <a href="index.html" id="nav-logo-link" class="nav-logo" aria-label="Divenic — Halaman Utama">
       <img src="asset/logo.png" alt="Divenic Logo" width="44" height="44">
@@ -89,9 +85,6 @@
         class="fa-solid fa-right-from-bracket"></i> Keluar</a>
   </nav>
 
-  <!-- ═══════════════════════════════════════════
-       MAIN CONTENT
-  ════════════════════════════════════════════ -->
   <main id="main-content" style="display:none; opacity:0; padding-top: 100px;">
     <h1 class="sr-only">Daftar Mentor Divenic</h1>
 
@@ -106,7 +99,7 @@
           </p>
         </div>
 
-        <!-- Mentor cards — populated dynamically -->
+        <!-- Mentor cards -->
         <div id="mentor-grid" class="mentor-grid" aria-label="Grid mentor Divenic">
           <p style="text-align:center; color:var(--mid-grey); padding:var(--space-xl);">
             Memuat profil mentor Divenic...
@@ -114,10 +107,8 @@
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- ── Footer ── -->
   <footer class="site-footer" role="contentinfo">
     <div class="footer-inner">
       <div class="footer-brand">
@@ -149,7 +140,6 @@
     </div>
   </footer>
 
-  <!-- ── Scripts ── -->
   <script type="module">
     import { initScrollReveal } from './js/utils.js';
     import { bindLogoutHandler } from './js/services/session.service.js';
@@ -162,10 +152,9 @@
       initNavbar();
       initMobileMenu();
 
-      // Logout handler
       bindLogoutHandler();
 
-      // Render mentors without limits
+      // Render mentors 
       await initMentors({ _forceFull: true });
 
       window.__hideLoading?.();

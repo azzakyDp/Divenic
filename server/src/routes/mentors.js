@@ -3,7 +3,6 @@ import pool from '../config/db.js';
 
 const router = express.Router();
 
-// GET /api/mentors - Fetch all mentors formatted identically to mentors.json
 router.get('/', async (req, res) => {
   try {
     const query = `

@@ -14,7 +14,7 @@ const COOKIE_OPTIONS = {
   ...(process.env.COOKIE_DOMAIN ? { domain: process.env.COOKIE_DOMAIN } : {})
 };
 
-// POST /api/auth/verify-birthdate — Validasi tanggal lahir member
+// POST /api/auth/verify-birthdate 
 router.post('/verify-birthdate', verifyBirthdateLimiter, async (req, res) => {
   try {
     const { memberId, birthday } = req.body;
@@ -104,7 +104,7 @@ router.post('/logout', (req, res) => {
   }
 });
 
-// GET /api/auth/me — cek apakah user masih login (untuk frontend redirect & info avatar)
+// GET /api/auth/me 
 router.get('/me', verifyToken, async (req, res) => {
   try {
     const { rows } = await pool.query(

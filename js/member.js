@@ -22,7 +22,7 @@ function setNickAttr(card, data) {
   card.dataset.nick = nick;
 }
 
-function initLazyGrid({ gridId, data, builder, mobileHref, section, forceFull = false }) {
+function initLazyGrid({ gridId, data, builder, mobileHref, section, forceFull = false, mobileLimit = 6 }) {
   const grid = qs(`#${gridId}`);
   if (!grid) return;
   grid.innerHTML = '';
@@ -43,10 +43,10 @@ function initLazyGrid({ gridId, data, builder, mobileHref, section, forceFull = 
   }
 
   if (isMobile() && mobileHref) {
-    data.slice(0, BATCH).forEach((item, i) => grid.appendChild(buildAndTag(item, i)));
+    data.slice(0, mobileLimit).forEach((item, i) => grid.appendChild(buildAndTag(item, i)));
     staggerReveal([...grid.children]);
     initMobileTap(grid);
-    if (data.length > BATCH) {
+    if (data.length > mobileLimit) {
       grid.parentElement.appendChild(
         createLoadMoreButton(`Lihat Semua ${data.length} ${section} →`,
           () => { window.location.href = mobileHref; })
@@ -81,7 +81,7 @@ function initLazyGrid({ gridId, data, builder, mobileHref, section, forceFull = 
   renderBatch();
 }
 
-export async function initMembers({ _forceFull = false } = {}) {
+export async function initMembers({ mobileLimit = 6, _forceFull = false } = {}) {
   const members = await fetchData(MEMBER_PATH);
   if (!members) return;
   initLazyGrid({
@@ -91,10 +91,12 @@ export async function initMembers({ _forceFull = false } = {}) {
     mobileHref: 'member.html',
     section: 'Member',
     forceFull: _forceFull,
+    mobileLimit,
+    BATCH
   });
 }
 
-export async function initMentors({ _forceFull = false } = {}) {
+export async function initMentors({ mobileLimit = 6, _forceFull = false } = {}) {
   const mentors = await fetchData(MENTOR_PATH);
   if (!mentors) return;
   initLazyGrid({
@@ -104,5 +106,7 @@ export async function initMentors({ _forceFull = false } = {}) {
     mobileHref: 'mentor.html',
     section: 'Mentor',
     forceFull: _forceFull,
+    mobileLimit,
+    BATCH
   });
 }

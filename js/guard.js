@@ -2,7 +2,7 @@ import { isMember, getCurrentUser } from './services/auth.service.js';
 import { API_BASE } from './utils.js';
 
 export async function requireAuth() {
-  // Local session check first
+  // Local session check
   if (isMember()) {
     return getCurrentUser();
   }

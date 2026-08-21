@@ -1,16 +1,11 @@
-/* ============================================================
-   DIVENIC — gallery.js  (refactored: lazy-load per batch)
-   ============================================================ */
-
 import { API_BASE, fetchData, qs, el, staggerReveal, isMobile, createLoadMoreButton, animateStaggeredReveal } from './utils.js';
 import { buildEventCard } from './components/event-card.js';
 import { buildPhotoCard, renderPhotoBatch } from './components/photo-card.js';
 import { buildMemoryCard } from './components/memory-card.js';
 
-const PHOTO_BATCH = 10;
+const PHOTO_BATCH = 12;
 
-/* ── Event Timeline ──────────────────────────── */
-
+/* Event Timeline */
 export async function initEventTimeline() {
   const timeline = qs('#event-timeline');
   if (!timeline) return;
@@ -21,9 +16,8 @@ export async function initEventTimeline() {
   staggerReveal([...timeline.children], 0, 120);
 }
 
-/* ── Photo Gallery ───────────────────────────── */
-
-export async function initGallery() {
+/* Photo Gallery */
+export async function initGallery({ mobileLimit = 8 } = {}) {
   const grid = qs('#photo-grid');
   if (!grid) return;
   const albums = await fetchData(`${API_BASE}/albums`);
@@ -32,13 +26,13 @@ export async function initGallery() {
   const photos = albums.flatMap(a => a.photos.map(p => ({ ...p, albumTitle: a.title })));
   grid.innerHTML = '';
 
-  // Mobile → tampil 10, tombol redirect ke gallery.html
+  // Mobile → tampil 8 foto
   if (isMobile()) {
-    renderPhotoBatch(photos, 0, PHOTO_BATCH, grid);
+    renderPhotoBatch(photos, 0, mobileLimit, grid);
     staggerReveal([...grid.children], 0, 40);
     initLightbox(photos);
 
-    if (photos.length > PHOTO_BATCH) {
+    if (photos.length > mobileLimit) {
       const wrap = createLoadMoreButton(
         `Lihat Semua ${photos.length} Foto →`,
         () => { window.location.href = 'gallery.html'; }
@@ -80,8 +74,7 @@ export async function initGallery() {
   if (offset < photos.length) attachBtn();
 }
 
-/* ── Full gallery page (gallery.html) ───────── */
-
+/* Full gallery page */
 export async function initFullGallery() {
   const grid = qs('#photo-grid');
   if (!grid) return;
@@ -113,7 +106,7 @@ export async function initFullGallery() {
   obs.observe(sentinel);
 }
 
-/* ── Lightbox ────────────────────────────────── */
+/* Lightbox */
 
 let activeLightboxKeydown = null;
 
@@ -164,8 +157,7 @@ function initLightbox(photos) {
   lb.addEventListener('click', e => { if (e.target === lb) close(); });
 }
 
-/* ── Memory Wall ─────────────────────────────── */
-
+/* Memory Wall */
 export async function initMemoryWall({ limit = null } = {}) {
   const grid = qs('#memory-grid');
   if (!grid) return;

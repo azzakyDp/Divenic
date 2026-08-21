@@ -1,9 +1,3 @@
-/* ============================================================
-   DIVENIC — animations.css
-   Section reveal effects, card panel interaction, and transitions
-   ============================================================ */
-
-
 /* Hero reveal: quick fade without vertical shift */
 #hero [data-reveal] {
   transform: none;

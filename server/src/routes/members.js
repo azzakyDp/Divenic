@@ -3,7 +3,6 @@ import pool from '../config/db.js';
 
 const router = express.Router();
 
-// GET /api/members - Fetch all members formatted identically to members.json
 router.get('/', async (req, res) => {
   try {
     const query = `

@@ -1,10 +1,4 @@
-/* ============================================================
-   DIVENIC — FLOW CSS
-   Styles for landing, auth (login/register), gender, 
-   member selection, loading, intro, and coming-soon pages
-   ============================================================ */
-
-/* ── Common Layout for Flow Pages ────────────────── */
+/* Common Layout for Flow Pages */
 .flow-body {
   min-height: 100dvh;
   display: flex;
@@ -42,7 +36,7 @@
   }
 }
 
-/* ── Typography & Headers ────────────────────────── */
+/* Typography & Headers */
 .flow-logo {
   width: 72px;
   height: 72px;
@@ -67,7 +61,7 @@
   margin-bottom: var(--space-xl);
 }
 
-/* ── Form Elements ──────────────────────────────── */
+/* Form Elements ───*/
 .flow-form {
   display: flex;
   flex-direction: column;
@@ -429,7 +423,7 @@
   font-size: 20px;
 }
 
-/* ── Wizard Registration Styles ─────────────────── */
+/* Wizard Registration Styles */
 .wizard-progress {
   display: flex;
   justify-content: space-between;
@@ -491,6 +485,43 @@
   margin-top: var(--space-xl);
 }
 
+/* Password Toggle Button */
+.password-input-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrap .form-input {
+  padding-right: 44px;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: transparent;
+  font-size: var(--text-base);
+  color: var(--mid-grey);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  transition: color var(--duration-fast)
+}
+
+.password-toggle-btn:hover {
+  color: var(--copper);
+}
+
+.password-toggle-btn:focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: 1px;
+}
+
 /* Registration member selection subgrid */
 .wizard-member-grid {
   display: grid;
@@ -521,7 +552,7 @@
   border-color: var(--rust);
 }
 
-/* ── Coming Soon Page ───────────────────────────── */
+/* Coming Soon Page */
 .cs-wrap {
   text-align: center;
 }
@@ -545,7 +576,7 @@
   }
 }
 
-/* ── Loading Screen (Page) ──────────────────────── */
+/* Loading Screen */
 .flow-loading {
   display: flex;
   flex-direction: column;
@@ -574,7 +605,7 @@
   transition: transform 0.1s linear;
 }
 
-/* ── Intro Screen (Page) ───────────────────────── */
+/* Intro Screen (Page) */
 .intro-container {
   width: 100%;
   max-width: 800px;
@@ -621,7 +652,7 @@
   }
 }
 
-/* ── Media Queries ────────────────────────────── */
+/* Media Queries */
 @media (max-width: 480px) {
   .flow-container {
     padding: var(--space-xl) var(--space-md);

@@ -7,7 +7,6 @@ export const loginLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'too_many_requests', retryAfter: '15 menit' },
-  // Hitung hanya request yang gagal (status 4xx), bukan yang berhasil
   skipSuccessfulRequests: true,
 });
 

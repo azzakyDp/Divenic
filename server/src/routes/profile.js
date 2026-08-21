@@ -4,7 +4,7 @@ import { verifyToken } from '../middleware/auth.js';
 
 const router = Router();
 
-// GET /api/profile/me — Ambil profil member user yang sedang login
+// GET /api/profile/me 
 router.get('/me', verifyToken, async (req, res) => {
   try {
     const { userId } = req.user;
@@ -39,7 +39,7 @@ router.get('/me', verifyToken, async (req, res) => {
   }
 });
 
-// PUT /api/profile/me — Update division, bio, quote, instagram untuk member dan/atau profile_avatar untuk user login
+// PUT /api/profile/me 
 router.put('/me', verifyToken, async (req, res) => {
   try {
     const { userId } = req.user;
@@ -55,12 +55,11 @@ router.put('/me', verifyToken, async (req, res) => {
     const { profileAvatar, division, bio, quote, instagram } = req.body;
     let updatedProfileAvatar = user.profile_avatar || '';
 
-    // 1. Update profile_avatar di tabel users (jika field profileAvatar dikirim)
     if (profileAvatar !== undefined) {
       if (typeof profileAvatar !== 'string' || !profileAvatar.includes('res.cloudinary.com')) {
-        return res.status(400).json({ 
-          error: 'invalid_avatar_url', 
-          message: 'URL profileAvatar harus berupa URL Cloudinary yang valid (mengandung res.cloudinary.com)' 
+        return res.status(400).json({
+          error: 'invalid_avatar_url',
+          message: 'URL profileAvatar harus berupa URL Cloudinary yang valid (mengandung res.cloudinary.com)'
         });
       }
 
@@ -76,7 +75,6 @@ router.put('/me', verifyToken, async (req, res) => {
       }
     }
 
-    // 2. Update member profile di tabel members (jika ada member_id dan field member dikirim / bukan request khusus profileAvatar saja)
     let updatedMember = null;
     const hasMemberFields = division !== undefined || bio !== undefined || quote !== undefined || instagram !== undefined;
 

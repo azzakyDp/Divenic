@@ -191,12 +191,22 @@
       <div class="wizard-step" id="step-6">
         <div class="form-group" id="pass-reg-group" style="margin-bottom: var(--space-sm);">
           <label for="pass-reg" class="form-label">Kata Sandi</label>
-          <input type="password" id="pass-reg" class="form-input" placeholder="Minimal 8 karakter" required>
+          <div class="password-input-wrap">
+            <input type="password" id="pass-reg" class="form-input" placeholder="Minimal 8 karakter" required>
+            <button type="button" class="password-toggle-btn" id="toggle-pass-reg" aria-label="Tampilkan password">
+              <i class="fa-solid fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
           <span class="validation-error" id="pass-reg-error">Kata sandi minimal 8 karakter</span>
         </div>
         <div class="form-group" id="confirm-reg-group">
           <label for="confirm-reg" class="form-label">Konfirmasi Kata Sandi</label>
-          <input type="password" id="confirm-reg" class="form-input" placeholder="Ulangi kata sandi" required>
+          <div class="password-input-wrap">
+            <input type="password" id="confirm-reg" class="form-input" placeholder="Ulangi kata sandi" required>
+            <button type="button" class="password-toggle-btn" id="toggle-confirm-reg" aria-label="Tampilkan password">
+              <i class="fa-solid fa-eye" aria-hidden="true"></i>
+            </button>
+          </div>
           <span class="validation-error" id="confirm-reg-error">Kata sandi konfirmasi tidak cocok</span>
         </div>
       </div>
@@ -215,13 +225,22 @@
   <script type="module">
     import { setSession, getSession } from './js/services/session.service.js';
     import { optimazeCloudinary } from './js/services/asset.service.js';
-    import { API_BASE, fetchData } from './js/utils.js';
+    import { API_BASE, fetchData, setupPasswordToggle } from './js/utils.js';
 
     document.addEventListener('DOMContentLoaded', async () => {
       const form = document.getElementById('register-form');
       const btnPrev = document.getElementById('btn-prev');
       const btnNext = document.getElementById('btn-next');
       const btnCancel = document.getElementById('btn-cancel');
+
+      // Setup password visibility toggles
+      const passRegInput = document.getElementById('pass-reg');
+      const togglePassRegBtn = document.getElementById('toggle-pass-reg');
+      setupPasswordToggle(passRegInput, togglePassRegBtn);
+
+      const confirmRegInput = document.getElementById('confirm-reg');
+      const toggleConfirmRegBtn = document.getElementById('toggle-confirm-reg');
+      setupPasswordToggle(confirmRegInput, toggleConfirmRegBtn);
 
       let currentStep = 1;
       const totalSteps = 6;

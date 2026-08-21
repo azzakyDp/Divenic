@@ -8,6 +8,7 @@ const jsonCache = new Map();
 // Fetch JSON data
 export async function fetchData(path) {
   const isApi = path.includes('/api/');
+
   if (!isApi && jsonCache.has(path)) {
     return jsonCache.get(path);
   }
@@ -27,6 +28,7 @@ export async function fetchData(path) {
 export function formatDate(dateStr) {
   if (!dateStr) return '';
   const date = new Date(dateStr + 'T00:00:00');
+
   return date.toLocaleDateString('id-ID', {
     day: 'numeric',
     month: 'long',
@@ -37,6 +39,7 @@ export function formatDate(dateStr) {
 // Debounce
 export function debounce(fn, wait = 200) {
   let timer;
+
   return (...args) => {
     clearTimeout(timer);
     timer = setTimeout(() => fn(...args), wait);
@@ -55,6 +58,7 @@ export function qsa(selector, parent = document) {
 // Create element
 export function el(tag, className, attrs = {}) {
   const elem = document.createElement(tag);
+
   if (className) elem.className = className;
   for (const [key, val] of Object.entries(attrs)) {
     elem.setAttribute(key, val);
@@ -149,6 +153,7 @@ export function initImageSkeletons(root = document, selector = 'img') {
   root.querySelectorAll(selector).forEach(img => {
     if (img.dataset.src || img.classList.contains('img-lazy-transition')) return;
     if (img.complete) { img.classList.add('img-loaded'); return; }
+
     img.addEventListener('load', () => img.classList.add('img-loaded'), { once: true });
     img.addEventListener('error', () => img.classList.add('img-loaded'), { once: true });
   });
@@ -158,6 +163,7 @@ export function initImageSkeletons(root = document, selector = 'img') {
 export function createLoadMoreButton(label, onClick) {
   const wrap = el('div', 'view-more-wrap');
   const btn = el('button', 'btn-view-more');
+
   btn.textContent = label;
   btn.addEventListener('click', onClick);
   wrap.appendChild(btn);
@@ -171,5 +177,23 @@ export function animateStaggeredReveal(elements, delayStep = 40) {
       c.style.transitionDelay = `${i * delayStep}ms`;
       c.classList.add('revealed');
     });
+  });
+}
+
+// Password visibility toggle helper
+export function setupPasswordToggle(inputEl, toggleBtnEl) {
+  if (!inputEl || !toggleBtnEl) return;
+
+  toggleBtnEl.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const isPassword = inputEl.type === 'password';
+    inputEl.type = isPassword ? 'text' : 'password';
+    toggleBtnEl.setAttribute('aria-label', isPassword ? 'Sembunyikan password' : 'Tampilkan password');
+
+    const icon = toggleBtnEl.querySelector('i');
+    if (icon) {
+      icon.className = isPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+    }
   });
 }

@@ -1,9 +1,4 @@
-/* ============================================================
-   DIVENIC — ALBUM CSS
-   Gallery grid, lightbox, Memory Wall, Kaleidoskop
-   ============================================================ */
-
-/* ── Album / Gallery Section ────────────────── */
+/* ── Album Section ────────────────── */
 #album {
   padding: var(--space-3xl) 0;
 }
@@ -26,7 +21,7 @@
   overflow: hidden;
   cursor: pointer;
   background: var(--parchment);
-  aspect-ratio: 4/3; /* Fixed aspect-ratio to prevent Cumulative Layout Shift */
+  aspect-ratio: 4/3;
 }
 
 /* Span variations for visual rhythm */
@@ -80,7 +75,7 @@
   transform: scale(1);
 }
 
-/* ── Memory Wall ─────────────────────────────── */
+/* Memory Wall */
 #memory-wall {
   padding: var(--space-3xl) 0;
   background: linear-gradient(180deg, #2A2420, #1A1208);
@@ -173,7 +168,7 @@
   content: '— ';
 }
 
-/* ── Kaleidoskop Section ─────────────────────── */
+/* Kaleidoskop Section */
 #kaleidoskop {
   padding: var(--space-3xl) 0;
   background: var(--cream);
@@ -231,10 +226,8 @@
   color: var(--mid-grey);
 }
 
-/* ── View More / Load More Button (gallery) ── */
-/* Re-uses .view-more-wrap and .btn-view-more from member.css */
-
-/* ── Lightbox ────────────────────────────────── */
+/* View More / Load More Button */
+/* Lightbox */
 #lightbox {
   position: fixed;
   inset: 0;

@@ -1,16 +1,9 @@
-/* ============================================================
-   DIVENIC — animation.js
-   Orkestrator efek animasi, preloader/loading, dan navigasi scroll
-   ============================================================ */
-
 import { isMobile, qs } from './utils.js';
 import { shouldPlayIntro, markIntroCompleted } from './services/intro.service.js';
 import { getCurrentUser } from './services/auth.service.js';
 import { resetMemberIntro } from './services/storage.service.js';
 
-/**
- * Initialize the premium loading screen
- */
+// Initialize the premium loading screen
 export function initLoadingScreen() {
   const screen = document.getElementById('loading-screen');
   if (!screen) return;
@@ -26,12 +19,10 @@ export function initLoadingScreen() {
   }, 3000);
 }
 
-/**
- * Run intro welcome animation then reveal main content
- */
+// Run intro welcome animation then reveal main content
 export function initIntro() {
-  const intro  = qs('#intro');
-  const main   = qs('#main-content');
+  const intro = qs('#intro');
+  const main = qs('#main-content');
   const navbar = qs('#navbar');
 
   if (!intro || !main) return;
@@ -47,12 +38,12 @@ export function initIntro() {
   const introDuration = isMobile() ? 2200 : 3200;
 
   intro.style.opacity = '1';
-  main.style.opacity  = '0';
+  main.style.opacity = '0';
 
   setTimeout(() => {
     // Fade out intro
     intro.style.transition = 'opacity 0.8s ease';
-    intro.style.opacity    = '0';
+    intro.style.opacity = '0';
 
     setTimeout(() => {
       hideIntro(intro, main, navbar, true);
@@ -62,16 +53,16 @@ export function initIntro() {
 }
 
 function hideIntro(intro, main, navbar, animate) {
-  intro.style.display  = 'none';
-  main.style.opacity   = animate ? '0' : '1';
-  main.style.display   = 'block';
+  intro.style.display = 'none';
+  main.style.opacity = animate ? '0' : '1';
+  main.style.display = 'block';
 
   if (navbar) navbar.classList.add('visible');
 
   if (animate) {
     requestAnimationFrame(() => {
       main.style.transition = 'opacity 0.6s ease';
-      main.style.opacity    = '1';
+      main.style.opacity = '1';
     });
   }
 }
@@ -100,7 +91,7 @@ export function initNavbar() {
 
   const update = () => {
     const y = window.scrollY;
-    navbar.classList.toggle('visible',  y > 10);
+    navbar.classList.toggle('visible', y > 10);
     navbar.classList.toggle('scrolled', y > 60);
   };
 
@@ -114,7 +105,7 @@ export function initNavbar() {
 export function initMobileMenu() {
   const hamburger = qs('#hamburger');
   const mobileMenu = qs('#mobile-menu');
-  const overlay   = qs('#menu-overlay');
+  const overlay = qs('#menu-overlay');
 
   if (!hamburger || !mobileMenu) return;
 
