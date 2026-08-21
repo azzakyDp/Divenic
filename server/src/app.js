@@ -15,14 +15,19 @@ import profileRoutes from './routes/profile.js';
 const app = express();
 
 // Security headers
-app.use(helmet());
+app.use(helmet(
+  {
+    crossOriginResourcePolicy: { policy: 'cross-origin' }
+  }
+));
 
 // CORS — izinkan lokal dev & Vercel same-origin production
 const allowedOrigins = [
   'http://localhost:5500',
   'http://127.0.0.1:5500',
   'http://localhost:3000',
-  'http://127.0.0.1:3000'
+  'http://127.0.0.1:3000',
+  'https://PLACEHOLDER.vercel.app'
 ];
 
 app.use(cors({

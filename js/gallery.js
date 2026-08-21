@@ -2,7 +2,7 @@
    DIVENIC — gallery.js  (refactored: lazy-load per batch)
    ============================================================ */
 
-import { fetchData, qs, el, staggerReveal, isMobile, createLoadMoreButton, animateStaggeredReveal } from './utils.js';
+import { API_BASE, fetchData, qs, el, staggerReveal, isMobile, createLoadMoreButton, animateStaggeredReveal } from './utils.js';
 import { buildEventCard } from './components/event-card.js';
 import { buildPhotoCard, renderPhotoBatch } from './components/photo-card.js';
 import { buildMemoryCard } from './components/memory-card.js';
@@ -14,7 +14,7 @@ const PHOTO_BATCH = 10;
 export async function initEventTimeline() {
   const timeline = qs('#event-timeline');
   if (!timeline) return;
-  const events = await fetchData('data/events.json');
+  const events = await fetchData(`${API_BASE}/events`);
   if (!events) return;
   timeline.innerHTML = '';
   events.forEach((ev, i) => timeline.appendChild(buildEventCard(ev, i)));
@@ -26,7 +26,7 @@ export async function initEventTimeline() {
 export async function initGallery() {
   const grid = qs('#photo-grid');
   if (!grid) return;
-  const albums = await fetchData('data/albums.json');
+  const albums = await fetchData(`${API_BASE}/albums`);
   if (!albums) return;
 
   const photos = albums.flatMap(a => a.photos.map(p => ({ ...p, albumTitle: a.title })));
@@ -85,7 +85,7 @@ export async function initGallery() {
 export async function initFullGallery() {
   const grid = qs('#photo-grid');
   if (!grid) return;
-  const albums = await fetchData('data/albums.json');
+  const albums = await fetchData(`${API_BASE}/albums`);
   if (!albums) return;
 
   const photos = albums.flatMap(a => a.photos.map(p => ({ ...p, albumTitle: a.title })));
@@ -169,7 +169,7 @@ function initLightbox(photos) {
 export async function initMemoryWall({ limit = null } = {}) {
   const grid = qs('#memory-grid');
   if (!grid) return;
-  const messages = await fetchData('data/messages.json');
+  const messages = await fetchData(`${API_BASE}/messages`);
   if (!messages) return;
 
   grid.innerHTML = '';

@@ -5,14 +5,14 @@
   <!-- Session Guard -->
   <script type="module">
     import { guardSession } from './js/services/session.service.js';
-    guardSession('gender', 'landing.html');
+    guardSession('gender', 'login.html');
   </script>
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
     content="Divenic — Digital Yearbook & Arsip Kenangan. Bukan sekadar website, melainkan rumah bagi persahabatan yang tetap terjaga.">
-  <title>Divenic — Digital Yearbook</title>
+  <title>Divenic</title>
 
   <!-- Favicon & Icons -->
   <link rel="icon" href="asset/logo.png" type="image/png">
@@ -82,7 +82,18 @@
           <i class="fa-solid fa-chevron-down" style="font-size:10px; color:var(--slate);"></i>
         </button>
         <div id="nav-profile-dropdown" class="nav-profile-dropdown"
-          style="display:none; position:absolute; right:0; top:calc(100% + 10px); background:var(--warm-white); border:1px solid var(--color-border); border-radius:var(--card-radius); box-shadow:var(--card-shadow); min-width:160px; z-index:1000; overflow:hidden; padding:6px 0;">
+          style="display:none; position:absolute; right:0; top:calc(100% + 10px); background:var(--warm-white); border:1px solid var(--color-border); 
+            border-radius:var(--card-radius); box-shadow:var(--card-shadow); min-width:200px; z-index:1000; overflow:hidden; padding:12px 0;">
+          <!-- Profile Header Section -->
+          <div id="nav-profile-header" style="display:flex; align-items:center; padding:0 12px; text-align:center;">
+            <img id="nav-dropdown-avatar" src="asset/icons/person.png" alt="Avatar"
+              style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--copper); margin-bottom:8px;" />
+            <span id="nav-dropdown-nickname"
+              style="font-size:var(--text-sm); font-weight:700; color:var(--slate); word-break:break-word; margin: 0 12px;">
+              User
+            </span>
+          </div>
+          <div style="height:1px; background:var(--color-border); margin:4px 0;"></div>
           <a href="dashboard.html" class="nav-dropdown-item"
             style="display:flex; align-items:center; gap:8px; padding:10px 16px; color:var(--charcoal); text-decoration:none; font-size:var(--text-sm); font-weight:600; transition:background 0.2s;">
             <i class="fa-solid fa-user-gear" style="color:var(--copper);"></i> Dashboard
@@ -123,7 +134,7 @@
 
   <!-- ── MAIN CONTENT ── -->
   <main id="main-content" style="display:none; opacity:0;">
-    <h1 class="sr-only">Divenic — Buku Tahunan Digital & Arsip Kenangan</h1>
+    <h1 class="sr-only">Divenic</h1>
 
     <!-- ── HERO ── -->
     <section id="hero" aria-label="Galeri Foto Utama">
@@ -445,36 +456,39 @@
 
       try {
         const { API_BASE, fetchData } = await import('./js/utils.js');
+        const { optimazeCloudinary } = await import('./js/services/asset.service.js');
         const userAuth = await fetchData(`${API_BASE}/auth/me`);
-        if (userAuth && userAuth.avatar && userAvatarImg) {
-          userAvatarImg.src = userAuth.avatar;
-        }
-      } catch (e) {
-        const { getSession } = await import('./js/services/session.service.js');
-        const session = getSession();
-        const isGuest = session.mode === 'guest';
-
-        const dashboardLinkDesktop = profileDropdown?.querySelector('a[href="dashboard.html"]');
-        const dashboardDivider = dashboardLinkDesktop?.nextElementSibling;
-        const dashboardLinkMobile = document.querySelector('#mobile-menu a[href="dashboard.html"]');
-
-        if (isGuest) {
-          // Tamu: tidak punya profil member — sembunyikan Dashboard, avatar tetap generik
-          dashboardLinkDesktop?.style.setProperty('display', 'none');
-          dashboardDivider?.style.setProperty('display', 'none');
-          dashboardLinkMobile?.style.setProperty('display', 'none');
-        } else {
-          try {
-            const { API_BASE, fetchData } = await import('./js/utils.js');
-            const userAuth = await fetchData(`${API_BASE}/auth/me`);
-            if (userAuth && userAuth.avatar && userAvatarImg) {
-              userAvatarImg.src = userAuth.avatar;
-            }
-          } catch (e) {
-            console.error('Error loading navbar user avatar:', e);
+        if (userAuth && !userAuth.error) {
+          const displayAvatar = userAuth.profileAvatar || userAuth.avatar;
+          if (displayAvatar) {
+            const formatted = optimazeCloudinary ? optimazeCloudinary(displayAvatar, 96, 96) : displayAvatar;
+            if (userAvatarImg) userAvatarImg.src = formatted;
+            const dropdownAvatar = document.getElementById('nav-dropdown-avatar');
+            if (dropdownAvatar) dropdownAvatar.src = formatted;
+          }
+          const dropdownNickname = document.getElementById('nav-dropdown-nickname');
+          if (dropdownNickname) {
+            dropdownNickname.textContent = userAuth.nickname || userAuth.name || 'User';
           }
         }
-        console.error('Error loading navbar user avatar:', e);
+      } catch (e) {
+        try {
+          const { getSession } = await import('./js/services/session.service.js');
+          const session = getSession();
+          const isGuest = session?.mode === 'guest';
+
+          const dashboardLinkDesktop = profileDropdown?.querySelector('a[href="dashboard.html"]');
+          const dashboardDivider = dashboardLinkDesktop?.nextElementSibling;
+          const dashboardLinkMobile = document.querySelector('#mobile-menu a[href="dashboard.html"]');
+
+          if (isGuest) {
+            dashboardLinkDesktop?.style.setProperty('display', 'none');
+            dashboardDivider?.style.setProperty('display', 'none');
+            dashboardLinkMobile?.style.setProperty('display', 'none');
+          }
+        } catch (sessionErr) {
+          console.error('Error handling guest session:', sessionErr);
+        }
       }
 
       // Page features

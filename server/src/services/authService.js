@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const MAX_ATTEMPTS = 8;
-const WARN_AT     = 5;
+const WARN_AT = 5;
 const LOCK_MINUTES = 30;
 const BCRYPT_ROUNDS = 12;
 
@@ -16,29 +16,44 @@ async function applyDelay(attempts) {
 }
 
 export async function loginUser(identifier, password) {
-  // Ambil user — selalu query meskipun belum tahu apakah nickname/email ada
+  const cleanIdentifier = (identifier || '').trim();
+  console.log(`[AUTH] loginUser() reached | identifier: "${cleanIdentifier}"`);
+
+  // Ambil user dengan case-insensitive & trimmed matching
   const { rows } = await pool.query(
-    'SELECT * FROM users WHERE nickname = $1 OR email = $1', [identifier]
+    'SELECT * FROM users WHERE LOWER(TRIM(nickname)) = LOWER($1) OR LOWER(TRIM(email)) = LOWER($1)',
+    [cleanIdentifier]
   );
   const user = rows[0];
+
+  console.log('[AUTH] database query completed | user found:', user ? {
+    id: user.id,
+    nickname: user.nickname,
+    email: user.email,
+    role: user.role,
+    is_locked: user.is_locked,
+    failed_attempts: user.failed_attempts
+  } : 'NOT_FOUND');
 
   // Cek lockout
   if (user?.is_locked && user.locked_until > new Date()) {
     const minutesLeft = Math.ceil((new Date(user.locked_until) - Date.now()) / 60000);
+    console.log(`[AUTH] user account is locked | minutesLeft: ${minutesLeft}`);
     return { error: 'locked', minutesLeft };
   }
 
   // Progressive delay sebelum cek password
   await applyDelay(user?.failed_attempts ?? 0);
 
-  // Verifikasi password — bcrypt.compare tetap dijalankan meski user tidak ada
-  // (pakai hash dummy) supaya response time konsisten → cegah timing attack
+  // Verifikasi password
   const dummyHash = '$2b$12$invalidhashfortimingnormalization000000000000000000000';
   const isValid = await bcrypt.compare(password, user?.password_hash ?? dummyHash);
 
+  console.log('[AUTH] password verification completed | isValid:', isValid);
+
   if (!user || !isValid) {
     if (user) await recordFailedAttempt(user);
-    // Layer 5: pesan SELALU sama, tidak bocorkan mana yang salah
+    console.log('[AUTH] login failed: invalid credentials');
     return { error: 'invalid_credentials' };
   }
 
@@ -54,12 +69,14 @@ export async function loginUser(identifier, password) {
     { expiresIn: process.env.JWT_EXPIRES_IN }
   );
 
+  console.log('[AUTH] JWT generated & login success | role:', user.role);
+
   return { token, role: user.role };
 }
 
 async function recordFailedAttempt(user) {
   const newAttempts = (user.failed_attempts ?? 0) + 1;
-  const shouldLock  = newAttempts >= MAX_ATTEMPTS;
+  const shouldLock = newAttempts >= MAX_ATTEMPTS;
 
   await pool.query(
     `UPDATE users SET
@@ -79,18 +96,20 @@ async function recordFailedAttempt(user) {
   return { attempts: newAttempts, warnAt: WARN_AT, maxAttempts: MAX_ATTEMPTS };
 }
 
-
 export async function registerUser(nickname, email, password, memberId = null) {
+  const cleanNickname = (nickname || '').trim();
+  const cleanEmail = email ? email.trim() : null;
+
   // Cek nickname belum dipakai
   const { rows: existingNickname } = await pool.query(
-    'SELECT id FROM users WHERE nickname = $1', [nickname]
+    'SELECT id FROM users WHERE LOWER(TRIM(nickname)) = LOWER($1)', [cleanNickname]
   );
   if (existingNickname[0]) return { error: 'nickname_taken' };
 
   // Cek email belum dipakai
-  if (email) {
+  if (cleanEmail) {
     const { rows: existingEmail } = await pool.query(
-      'SELECT id FROM users WHERE email = $1', [email]
+      'SELECT id FROM users WHERE LOWER(TRIM(email)) = LOWER($1)', [cleanEmail]
     );
     if (existingEmail[0]) return { error: 'email_taken' };
   }
@@ -104,11 +123,11 @@ export async function registerUser(nickname, email, password, memberId = null) {
   const { rows } = await pool.query(
     `INSERT INTO users (member_id, nickname, email, password_hash, role)
      VALUES ($1, $2, $3, $4, $5) RETURNING id, role`,
-    [memberId ?? null, nickname, email ?? null, passwordHash, role]
+    [memberId ?? null, cleanNickname, cleanEmail ?? null, passwordHash, role]
   );
 
   return { userId: rows[0].id, role: rows[0].role };
 }
 
-
-
+console.log('JWT_SECRET tersedia:', Boolean(process.env.JWT_SECRET));
+console.log('JWT_EXPIRES_IN:', process.env.JWT_EXPIRES_IN);

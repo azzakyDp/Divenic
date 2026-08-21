@@ -34,11 +34,19 @@ export function clearSession() {
  * Consolidated logout handler for nav items
  */
 export function bindLogoutHandler() {
-  const handleLogout = (e) => {
+  const handleLogout = async (e) => {
     e.preventDefault();
     if (confirm('Apakah Anda yakin ingin keluar dari Divenic?')) {
+      try {
+        await fetch(`${API_BASE}/auth/logout`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+      } catch (err) {
+        console.error('[Logout] Error calling logout API:', err);
+      }
       clearSession();
-      window.location.href = 'landing.html';
+      window.location.href = 'login.html';
     }
   };
   document.getElementById('btn-logout')?.addEventListener('click', handleLogout);
@@ -50,7 +58,7 @@ export function bindLogoutHandler() {
  * @param {string} key - Session state key to validate
  * @param {string} redirect - Destination page URL
  */
-export async function guardSession(key = 'gender', redirect = 'landing.html') {
+export async function guardSession(key = 'gender', redirect = 'login.html') {
   const session = getSession();
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
 

@@ -1,7 +1,5 @@
-// js/guard.js
 import { isMember, getCurrentUser } from './services/auth.service.js';
-
-const API = '/api';
+import { API_BASE } from './utils.js';
 
 export async function requireAuth() {
   // Local session check first
@@ -10,7 +8,7 @@ export async function requireAuth() {
   }
 
   try {
-    const res = await fetch(`${API}/auth/me`, {
+    const res = await fetch(`${API_BASE}/auth/me`, {
       credentials: 'include',
     });
     if (!res.ok) throw new Error('unauthorized');

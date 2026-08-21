@@ -13,6 +13,7 @@ router.get('/me', verifyToken, async (req, res) => {
         u.id AS "userId",
         u.nickname AS "userNickname",
         u.role,
+        COALESCE(u.profile_avatar, '') AS "profileAvatar",
         m.id AS "memberId",
         m.name,
         m.nickname,
@@ -38,56 +39,85 @@ router.get('/me', verifyToken, async (req, res) => {
   }
 });
 
-// PUT /api/profile/me — Update division, bio, instagram untuk member user login
+// PUT /api/profile/me — Update division, bio, quote, instagram untuk member dan/atau profile_avatar untuk user login
 router.put('/me', verifyToken, async (req, res) => {
   try {
     const { userId } = req.user;
 
-    // Ambil member_id dari user login
-    const userQuery = 'SELECT member_id FROM users WHERE id = $1';
+    const userQuery = 'SELECT member_id, profile_avatar FROM users WHERE id = $1';
     const { rows: userRows } = await pool.query(userQuery, [userId]);
     const user = userRows[0];
 
-    if (!user || !user.member_id) {
-      return res.status(400).json({ error: 'no_member_profile_linked' });
+    if (!user) {
+      return res.status(404).json({ error: 'user_not_found' });
     }
 
-    let { division = '', bio = '', instagram = '' } = req.body;
+    const { profileAvatar, division, bio, quote, instagram } = req.body;
+    let updatedProfileAvatar = user.profile_avatar || '';
 
-    division = typeof division === 'string' ? division.trim() : '';
-    bio = typeof bio === 'string' ? bio.trim() : '';
-    instagram = typeof instagram === 'string' ? instagram.trim() : '';
+    // 1. Update profile_avatar di tabel users (jika field profileAvatar dikirim)
+    if (profileAvatar !== undefined) {
+      if (typeof profileAvatar !== 'string' || !profileAvatar.includes('res.cloudinary.com')) {
+        return res.status(400).json({ 
+          error: 'invalid_avatar_url', 
+          message: 'URL profileAvatar harus berupa URL Cloudinary yang valid (mengandung res.cloudinary.com)' 
+        });
+      }
 
-    // Clean instagram prefix if user included @
-    if (instagram.startsWith('@')) {
-      instagram = instagram.substring(1).trim();
+      const updateUsersQuery = `
+        UPDATE users
+        SET profile_avatar = $1
+        WHERE id = $2
+        RETURNING profile_avatar
+      `;
+      const { rows: updatedUserRows } = await pool.query(updateUsersQuery, [profileAvatar, userId]);
+      if (updatedUserRows[0]) {
+        updatedProfileAvatar = updatedUserRows[0].profile_avatar;
+      }
     }
 
-    // Validasi bio maksimal 150 karakter
-    if (bio.length > 150) {
-      return res.status(400).json({ error: 'bio_too_long', message: 'Bio maksimal 150 karakter' });
-    }
+    // 2. Update member profile di tabel members (jika ada member_id dan field member dikirim / bukan request khusus profileAvatar saja)
+    let updatedMember = null;
+    const hasMemberFields = division !== undefined || bio !== undefined || quote !== undefined || instagram !== undefined;
 
-    const updateQuery = `
-      UPDATE members
-      SET division = $1, bio = $2, instagram = $3
-      WHERE id = $4
-      RETURNING id, name, nickname, division, class, bio, quote, avatar, instagram, gender
-    `;
-    const { rows: updatedMembers } = await pool.query(updateQuery, [
-      division,
-      bio,
-      instagram,
-      user.member_id
-    ]);
+    if (user.member_id && (hasMemberFields || profileAvatar === undefined)) {
+      let divVal = typeof division === 'string' ? division.trim() : '';
+      let bioVal = typeof bio === 'string' ? bio.trim() : '';
+      let quoteVal = typeof quote === 'string' ? quote.trim() : '';
+      let instaVal = typeof instagram === 'string' ? instagram.trim() : '';
 
-    if (!updatedMembers[0]) {
-      return res.status(404).json({ error: 'member_not_found' });
+      if (instaVal.startsWith('@')) {
+        instaVal = instaVal.substring(1).trim();
+      }
+
+      if (bioVal.length > 150) {
+        return res.status(400).json({ error: 'bio_too_long', message: 'Bio maksimal 150 karakter' });
+      }
+
+      if (quoteVal.length > 100) {
+        return res.status(400).json({ error: 'quote_too_long', message: 'Quote maksimal 100 karakter' });
+      }
+
+      const updateMemberQuery = `
+        UPDATE members
+        SET division = $1, bio = $2, instagram = $3, quote = $4
+        WHERE id = $5
+        RETURNING id, name, nickname, division, class, bio, quote, avatar, instagram, gender
+      `;
+      const { rows: updatedMembers } = await pool.query(updateMemberQuery, [
+        divVal,
+        bioVal,
+        instaVal,
+        quoteVal,
+        user.member_id
+      ]);
+      updatedMember = updatedMembers[0] || null;
     }
 
     res.json({
       message: 'Profil berhasil diperbarui',
-      member: updatedMembers[0]
+      profileAvatar: updatedProfileAvatar,
+      member: updatedMember
     });
   } catch (err) {
     console.error('Error updating profile:', err);

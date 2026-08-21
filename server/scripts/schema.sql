@@ -237,3 +237,5 @@ on public.messages
 for select
 to anon, authenticated
 using (true);
+
+ALTER TABLE public.users ADD COLUMN profile_avatar TEXT;

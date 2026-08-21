@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Divenic — Pengaturan Profil Member Buku Tahunan.">
-  <title>Dashboard Profil — Divenic</title>
+  <title>Dashboard Profil</title>
   <link rel="icon" href="asset/logo.png" type="image/png">
 
   <!-- Fonts -->
@@ -28,31 +28,61 @@
   <div class="flow-container" style="max-width: 540px;">
     <!-- Top Header Bar -->
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
-      <a href="index.html" class="flow-link" style="display: flex; align-items: center; gap: 6px; font-size: var(--text-sm); text-decoration: none;">
+      <a href="index.html" class="flow-link"
+        style="display: flex; align-items: center; gap: 6px; font-size: var(--text-sm); text-decoration: none;">
         <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
       </a>
       <img src="asset/logo.png" alt="Divenic Logo" style="width: 36px; height: 36px;">
     </div>
 
     <h1 class="flow-title" style="text-align: left; margin-bottom: 4px;">DASHBOARD PROFIL</h1>
-    <p class="flow-subtitle" style="text-align: left; margin-bottom: 24px;">Lengkapi data diri dan biodata Anda untuk buku tahunan</p>
+    <p class="flow-subtitle" style="text-align: left; margin-bottom: 24px;">Lengkapi data diri dan biodata Anda untuk
+      buku tahunan</p>
 
-    <!-- Profile Overview Card (Read-only) -->
-    <div style="background: rgba(255, 255, 255, 0.7); border: 1px solid var(--color-border); border-radius: var(--card-radius); padding: 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 24px; box-shadow: var(--card-shadow);">
-      <img id="profile-avatar" src="asset/icons/person.png" alt="Foto Profil" style="width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid var(--copper); background: var(--warm-white);" />
+    <!-- Profile Overview Card -->
+    <input type="file" id="avatar-file-input" accept="image/*" style="display: none;">
+
+    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; background: rgba(255, 255, 255, 0.7); padding: 16px; 
+      border-radius: var(--radius-md); border: 1px solid rgba(49, 78, 82, 0.12);">
+      <div style="position: relative; width: 72px; height: 72px; cursor: pointer;" id="profile-avatar-trigger">
+        <img id="profile-avatar" src="asset/icons/person.png" alt="Foto profil" style="width: 72px; height: 72px; border-radius: 50%; 
+          object-fit: cover; border: 3px solid var(--copper);">
+        <div
+          style="position: absolute; bottom: 0; right: 0; background: var(--copper); color: white; width: 24px; height: 24px; border-radius: 50%; 
+          display: grid; align-items: center; justify-content: center; font-size: 11px; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.15);">
+          <i class="fa-solid fa-camera"></i>
+        </div>
+      </div>
       <div>
-        <h2 id="profile-name" style="font-family: var(--font-display); font-size: var(--text-lg); color: var(--slate); margin: 0 0 4px 0;">Memuat nama...</h2>
-        <span id="profile-class" style="display: inline-block; padding: 2px 10px; border-radius: 12px; background: rgba(182, 93, 61, 0.12); color: var(--copper); font-size: var(--text-xs); font-weight: 700;">Memuat kelas...</span>
+        <h2 id="profile-name"
+          style="font-family: var(--font-title); font-size: var(--text-lg); color: var(--slate); margin: 0 0 2px 0;">-
+        </h2>
+        <p id="profile-class"
+          style="font-size: var(--text-xs); color: var(--mid-grey); display: flex; align-items: start;">-</p>
       </div>
     </div>
 
     <!-- Edit Profile Form -->
     <form id="profile-form" class="flow-form" novalidate>
 
-      <!-- Division Field (Text input - isolated container for easy future swap to dropdown) -->
+      <!-- Division Field -->
       <div class="form-group" id="division-group" style="margin-bottom: 18px;">
         <label for="division" class="form-label">Divisi Anda</label>
-        <input type="text" id="division" class="form-input" placeholder="Masukkan divisi Anda (contoh: Acara, Humas, Konsumsi)...">
+        <input type="text" id="division" class="form-input"
+          placeholder="Masukkan divisi Anda (contoh: Acara, Humas, Konsumsi)...">
+      </div>
+
+      <!-- Quote Field (Urutan: Division -> Quote -> Bio -> Instagram) -->
+      <div class="form-group" id="quote-group" style="margin-bottom: 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label for="quote" class="form-label" style="margin-bottom: 0;">Quote / Kalimat Favorit</label>
+          <span style="font-size: var(--text-xs); color: var(--mid-grey);"><span id="quote-counter">0</span> /
+            100</span>
+        </div>
+        <textarea id="quote" class="form-input" rows="2" maxlength="100"
+          placeholder="Tulis quote atau kalimat yang menggambarkan dirimu..."
+          style="resize: vertical; font-family: var(--font-ui);"></textarea>
+        <span class="validation-error" id="quote-error">Quote maksimal 100 karakter</span>
       </div>
 
       <!-- Bio Field (Textarea + Character Counter) -->
@@ -61,21 +91,29 @@
           <label for="bio" class="form-label" style="margin-bottom: 0;">Bio Singkat</label>
           <span style="font-size: var(--text-xs); color: var(--mid-grey);"><span id="bio-counter">0</span> / 150</span>
         </div>
-        <textarea id="bio" class="form-input" rows="4" maxlength="150" placeholder="Tuliskan kata-kata atau biodata singkat Anda..." style="resize: vertical; font-family: var(--font-ui);"></textarea>
+        <textarea id="bio" class="form-input" rows="4" maxlength="150"
+          placeholder="Tuliskan kata-kata atau biodata singkat Anda..."
+          style="resize: vertical; font-family: var(--font-ui);"></textarea>
         <span class="validation-error" id="bio-error">Bio maksimal 150 karakter</span>
       </div>
 
       <!-- Instagram Field (Input with @ prefix wrapper) -->
       <div class="form-group" id="instagram-group" style="margin-bottom: 24px;">
         <label for="instagram" class="form-label">Akun Instagram</label>
-        <div style="display: flex; align-items: center; border: 1.5px solid rgba(49, 78, 82, 0.15); border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.9); overflow: hidden; transition: border-color 0.2s;">
-          <span style="padding: 12px 14px; background: rgba(49, 78, 82, 0.06); color: var(--mid-grey); font-weight: 700; font-size: var(--text-base); border-right: 1px solid rgba(49, 78, 82, 0.12);">@</span>
-          <input type="text" id="instagram" class="form-input" style="border: none; border-radius: 0; background: transparent; padding-left: 12px;" placeholder="username_instagram">
+        <div
+          style="display: flex; align-items: center; border: 1.5px solid rgba(49, 78, 82, 0.15); border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.9); overflow: hidden; transition: border-color 0.2s;">
+          <span
+            style="padding: 12px 14px; background: rgba(49, 78, 82, 0.06); color: var(--mid-grey); font-weight: 700; font-size: var(--text-base); border-right: 1px solid rgba(49, 78, 82, 0.12);">@</span>
+          <input type="text" id="instagram" class="form-input"
+            style="border: none; border-radius: 0; background: transparent; padding-left: 12px;"
+            placeholder="username_instagram">
         </div>
       </div>
 
       <!-- Toast Notification Container -->
-      <div id="profile-toast" class="toast-notice" style="display: none; padding: 12px 16px; border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: 600; text-align: center; margin-bottom: 16px;"></div>
+      <div id="profile-toast" class="toast-notice"
+        style="display: none; padding: 12px 16px; border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: 600; text-align: center; margin-bottom: 16px;">
+      </div>
 
       <button type="submit" id="btn-save" class="flow-btn" style="width: 100%;">
         <i class="fa-solid fa-floppy-disk" style="margin-right: 6px;"></i> Simpan Perubahan
@@ -90,26 +128,21 @@
 
     document.addEventListener('DOMContentLoaded', async () => {
       const avatarImg = document.getElementById('profile-avatar');
+      const avatarTrigger = document.getElementById('profile-avatar-trigger');
+      const fileInput = document.getElementById('avatar-file-input');
+
       const nameEl = document.getElementById('profile-name');
       const classEl = document.getElementById('profile-class');
       const divisionInput = document.getElementById('division');
+      const quoteTextarea = document.getElementById('quote');
+      const quoteCounter = document.getElementById('quote-counter');
       const bioTextarea = document.getElementById('bio');
       const bioCounter = document.getElementById('bio-counter');
       const instagramInput = document.getElementById('instagram');
+
       const form = document.getElementById('profile-form');
       const btnSave = document.getElementById('btn-save');
       const toast = document.getElementById('profile-toast');
-
-      // Live Bio Character Counter
-      bioTextarea.addEventListener('input', () => {
-        const len = bioTextarea.value.length;
-        bioCounter.textContent = len;
-        if (len > 150) {
-          bioCounter.style.color = 'var(--rust)';
-        } else {
-          bioCounter.style.color = 'var(--mid-grey)';
-        }
-      });
 
       // Helper function to show toast message
       function showToast(message, isSuccess = true) {
@@ -130,30 +163,132 @@
         }, 4000);
       }
 
+      // Avatar Click Listener -> Trigger File Input
+      if (avatarTrigger && fileInput) {
+        avatarTrigger.addEventListener('click', () => {
+          fileInput.click();
+        });
+
+        fileInput.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          // Temporary local preview
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            avatarImg.src = evt.target.result;
+          };
+          reader.readAsDataURL(file);
+
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('upload_preset', 'divenic_avatar');
+
+          try {
+            let resCloudinary = await fetch('https://res.cloudinary.com/dzbvomjmq/image/upload/', {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!resCloudinary.ok) {
+              resCloudinary = await fetch('https://api.cloudinary.com/v1_1/dzbvomjmq/image/upload', {
+                method: 'POST',
+                body: formData
+              });
+            }
+
+            const dataCloudinary = await resCloudinary.json();
+            const uploadedUrl = dataCloudinary.secure_url || dataCloudinary.url;
+
+            if (!uploadedUrl) {
+              showToast(dataCloudinary.error?.message || 'Gagal mengunggah foto ke Cloudinary', false);
+              return;
+            }
+
+            // Simpan profileAvatar ke backend
+            const resSave = await fetch(`${API_BASE}/profile/me`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({ profileAvatar: uploadedUrl })
+            });
+
+            const saveData = await resSave.json();
+
+            if (resSave.ok) {
+              const newUrl = saveData.profileAvatar || uploadedUrl;
+              avatarImg.src = optimazeCloudinary(newUrl, 144, 144);
+              showToast('Foto profil berhasil diperbarui!', true);
+            } else {
+              showToast(saveData.message || 'Gagal menyimpan foto profil', false);
+            }
+          } catch (err) {
+            console.error('Error uploading profile avatar:', err);
+            showToast('Terjadi kesalahan saat mengunggah foto profil', false);
+          } finally {
+            fileInput.value = '';
+          }
+        });
+      }
+
+      // Live Quote Character Counter
+      if (quoteTextarea && quoteCounter) {
+        quoteTextarea.addEventListener('input', () => {
+          const len = quoteTextarea.value.length;
+          quoteCounter.textContent = len;
+          if (len > 100) {
+            quoteCounter.style.color = 'var(--rust)';
+          } else {
+            quoteCounter.style.color = 'var(--mid-grey)';
+          }
+        });
+      }
+
+      // Live Bio Character Counter
+      if (bioTextarea && bioCounter) {
+        bioTextarea.addEventListener('input', () => {
+          const len = bioTextarea.value.length;
+          bioCounter.textContent = len;
+          if (len > 150) {
+            bioCounter.style.color = 'var(--rust)';
+          } else {
+            bioCounter.style.color = 'var(--mid-grey)';
+          }
+        });
+      }
+
       // Auth Guard & Fetch Initial Profile Data
       try {
         const profile = await fetchData(`${API_BASE}/profile/me`);
         if (!profile || profile.error) {
-          // Guard: Redirect to login.html if unauthorized/not logged in
           window.location.replace('login.html');
           return;
         }
 
         // Render read-only header
-        nameEl.textContent = profile.name || profile.nickname || 'Member Divenic';
-        classEl.textContent = profile.class || 'Member';
-        if (profile.avatar) {
-          avatarImg.src = optimazeCloudinary(profile.avatar, 144, 144);
+        if (nameEl) nameEl.textContent = profile.name || profile.nickname || profile.userNickname || 'Member Divenic';
+        if (classEl) classEl.textContent = profile.class || 'Member';
+
+        // Render avatar (profileAvatar dengan fallback ke avatar / member.avatar)
+        const displayAvatar = profile.profileAvatar || profile.avatar;
+        if (displayAvatar) {
+          avatarImg.src = optimazeCloudinary(displayAvatar, 144, 144);
         } else {
           avatarImg.src = 'asset/icons/person.png';
         }
         avatarImg.onerror = () => { avatarImg.src = 'asset/icons/person.png'; };
 
         // Render editable fields
-        divisionInput.value = profile.division || '';
-        bioTextarea.value = profile.bio || '';
-        bioCounter.textContent = (profile.bio || '').length;
-        instagramInput.value = profile.instagram || '';
+        if (divisionInput) divisionInput.value = profile.division || '';
+        if (quoteTextarea) {
+          quoteTextarea.value = profile.quote || '';
+          if (quoteCounter) quoteCounter.textContent = (profile.quote || '').length;
+        }
+        if (bioTextarea) {
+          bioTextarea.value = profile.bio || '';
+          if (bioCounter) bioCounter.textContent = (profile.bio || '').length;
+        }
+        if (instagramInput) instagramInput.value = profile.instagram || '';
 
       } catch (err) {
         console.error('Error fetching profile:', err);
@@ -166,12 +301,18 @@
         e.preventDefault();
         toast.style.display = 'none';
 
-        const division = divisionInput.value.trim();
-        const bio = bioTextarea.value.trim();
-        let instagram = instagramInput.value.trim();
+        const division = divisionInput ? divisionInput.value.trim() : '';
+        const quote = quoteTextarea ? quoteTextarea.value.trim() : '';
+        const bio = bioTextarea ? bioTextarea.value.trim() : '';
+        let instagram = instagramInput ? instagramInput.value.trim() : '';
 
         if (instagram.startsWith('@')) {
           instagram = instagram.substring(1).trim();
+        }
+
+        if (quote.length > 100) {
+          showToast('Quote tidak boleh melebihi 100 karakter', false);
+          return;
         }
 
         if (bio.length > 150) {
@@ -188,7 +329,7 @@
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify({ division, bio, instagram })
+            body: JSON.stringify({ division, quote, bio, instagram })
           });
 
           const data = await res.json();

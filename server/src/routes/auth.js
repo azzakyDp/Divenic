@@ -9,7 +9,7 @@ const router = Router();
 const COOKIE_OPTIONS = {
   httpOnly: true,        // tidak bisa diakses JS — cegah XSS
   secure: process.env.NODE_ENV === 'production', // HTTPS only di production
-  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // none untuk cookie lintas origin di prod
+  sameSite: 'lax',
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 hari dalam ms
   ...(process.env.COOKIE_DOMAIN ? { domain: process.env.COOKIE_DOMAIN } : {})
 };
@@ -108,7 +108,7 @@ router.post('/logout', (req, res) => {
 router.get('/me', verifyToken, async (req, res) => {
   try {
     const { rows } = await pool.query(
-      `SELECT u.id, u.role, u.member_id, m.name, m.nickname, m.avatar, m.gender
+      `SELECT u.id, u.role, u.member_id, u.nickname AS user_nickname, COALESCE(u.profile_avatar, '') AS profile_avatar, m.name, m.nickname, COALESCE(m.avatar, '') AS avatar, m.gender
        FROM users u
        LEFT JOIN members m ON u.member_id = m.id
        WHERE u.id = $1`,
@@ -120,7 +120,9 @@ router.get('/me', verifyToken, async (req, res) => {
       userId: u.id,
       role: u.role,
       memberId: u.member_id,
-      name: u.name || u.nickname,
+      nickname: u.user_nickname || u.nickname || '',
+      name: u.name || u.nickname || u.user_nickname,
+      profileAvatar: u.profile_avatar || '',
       avatar: u.avatar || '',
       gender: u.gender || ''
     });
