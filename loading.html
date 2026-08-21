@@ -4,13 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Memuat Kenangan... — Divenic</title>
+  <title>Divenic</title>
   <link rel="icon" href="asset/logo.png" type="image/png">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lora:wght@400;600&family=Nunito:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/global.css">
@@ -27,7 +29,7 @@
 
   <div class="flow-container flow-loading">
     <img src="asset/logo.png" alt="Divenic Logo" class="flow-logo" style="animation: pulse 1.5s ease-in-out infinite;">
-    
+
     <h2 class="flow-title" style="font-size: var(--text-2xl);" id="loading-title">Menyiapkan Kenangan</h2>
     <p class="flow-subtitle" id="loading-status" style="margin-bottom: 0;">Menghubungkan masa lalu...</p>
 
@@ -38,8 +40,17 @@
 
   <style>
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.7; transform: scale(0.97); }
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.7;
+        transform: scale(0.97);
+      }
     }
   </style>
 
@@ -49,7 +60,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const fill = document.getElementById('progress-fill');
       const statusText = document.getElementById('loading-status');
-      
+
       const statuses = [
         'Membuka folder kenangan...',
         'Memuat senyum dan canda tawa...',
@@ -68,7 +79,7 @@
       const timer = setInterval(() => {
         progress += stepSize;
         if (progress > 100) progress = 100;
-        
+
         fill.style.transform = `scaleX(${progress / 100})`;
 
         // Change text based on progress
