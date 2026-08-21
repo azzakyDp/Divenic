@@ -3,7 +3,7 @@
   "redirects": [
     {
       "src": "/",
-      "dest": "/landing.html"
+      "destination": "/landing.html"
     }
   ],
   "rewrites": [
