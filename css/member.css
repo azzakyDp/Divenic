@@ -7,11 +7,6 @@
   background: var(--warm-white);
 }
 
-body.dedicated-page #members,
-body.dedicated-page #mentors {
-  padding-top: 0 !important;
-}
-
 .members-header,
 .mentors-header {
   text-align: center;

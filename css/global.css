@@ -476,7 +476,7 @@ textarea:focus-visible {
 .back-btn-wrap {
   display: flex;
   align-items: center;
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-lg);
 }
 
 .back-btn {

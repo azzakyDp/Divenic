@@ -35,27 +35,29 @@ export function initIntro() {
   }
 
   // Show intro welcome text
-  const introDuration = isMobile() ? 3300 : 3300;
+  // 0ms start -> 300ms SVG start -> 3100ms SVG finish -> 400ms HOLD -> 3500ms fade-out start -> 4000ms interactive
+  const introDuration = 3500;
 
   intro.style.opacity = '1';
   main.style.opacity = '0';
 
   setTimeout(() => {
-    // Fade out intro
+    // Fade out intro (500ms transition)
     intro.style.transition = 'opacity 0.5s ease';
     intro.style.opacity = '0';
 
     setTimeout(() => {
       hideIntro(intro, main, navbar, true);
       markIntroCompleted();
-    }, 800);
+    }, 500);
   }, introDuration);
 }
 
 function hideIntro(intro, main, navbar, animate) {
   intro.style.display = 'none';
-  main.style.opacity = animate ? '0' : '1';
+  intro.style.pointerEvents = 'none';
   main.style.display = 'block';
+  main.style.opacity = '1';
 
   if (navbar) navbar.classList.add('visible');
 
