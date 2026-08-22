@@ -472,11 +472,11 @@ textarea:focus-visible {
   opacity: 1 !important;
 }
 
-/* ── Back Button Component ─────────────────────── */
+/* Back Button Component */
 .back-btn-wrap {
   display: flex;
   align-items: center;
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-2xl);
 }
 
 .back-btn {

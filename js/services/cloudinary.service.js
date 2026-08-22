@@ -1,18 +1,8 @@
-/* ============================================================
-   DIVENIC — cloudinary.service.js
-   Cloudinary URL builder, cloud parsing, presets, and transformations.
-   ============================================================ */
-
 import { getPlaceholder } from './asset.service.js';
 
 const DEFAULT_CLOUD = 'dzbvomjmq';
 
-/**
- * Extracts publicId and cloudName from a full Cloudinary URL.
- * Falls back to default values if not a Cloudinary URL.
- * @param {string} url
- * @returns {{ publicId: string, cloudName: string }}
- */
+// Initializing cloud
 export function parseCloudinaryUrl(url) {
   if (!url) return { publicId: '', cloudName: DEFAULT_CLOUD };
   
@@ -29,16 +19,10 @@ export function parseCloudinaryUrl(url) {
   };
 }
 
-/**
- * Generates an optimized Cloudinary delivery URL with presets & options
- * @param {string} publicIdOrUrl
- * @param {object} [opts]
- * @returns {string}
- */
+// Optimaized cloudinary url
 export function buildCloudinaryUrl(publicIdOrUrl, opts = {}) {
   if (!publicIdOrUrl) return getPlaceholder();
 
-  // If it's a non-Cloudinary external URL, return it directly
   if (publicIdOrUrl.startsWith('http') && !publicIdOrUrl.includes('res.cloudinary.com')) {
     return publicIdOrUrl;
   }
@@ -63,10 +47,7 @@ export function buildCloudinaryUrl(publicIdOrUrl, opts = {}) {
   return `https://res.cloudinary.com/${cloudName}/image/upload/${transform ? transform + '/' : ''}${publicId}`;
 }
 
-/**
- * Contextual image preset builders
- */
-
+// Image presets
 export function getHeroImage(publicId, opts = {}) {
   return buildCloudinaryUrl(publicId, { w: 1200, ...opts });
 }
@@ -98,11 +79,7 @@ export function getVideoPoster(publicId, opts = {}) {
   return buildCloudinaryUrl(publicId, { w: 800, ...opts });
 }
 
-/**
- * Builds a dynamic video URL from Cloudinary.
- * @param {string} publicIdOrUrl
- * @returns {string}
- */
+// Video preset
 export function getVideoUrl(publicIdOrUrl) {
   if (!publicIdOrUrl) return '';
 

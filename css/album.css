@@ -3,6 +3,10 @@
   padding: var(--space-3xl) 0;
 }
 
+body.dedicated-page #album {
+  padding-top: 0 !important;
+}
+
 .album-header {
   text-align: center;
   margin-bottom: var(--space-3xl);

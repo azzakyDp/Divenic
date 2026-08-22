@@ -1,20 +1,11 @@
-/* ============================================================
-   DIVENIC — image.service.js
-   Centralized progressive image lazy-loading, decoding, and DOM resolution.
-   ============================================================ */
-
 import { getPlaceholder } from './asset.service.js';
 import { buildCloudinaryUrl, getVideoUrl } from './cloudinary.service.js';
 import { getOrCacheUrl } from './cache.service.js';
 
-// Single IntersectionObserver instance for layout-efficient progressive image loading
+// Single IntersectionObserver 
 let centralizedObserver = null;
 
-/**
- * Returns the single, centralized IntersectionObserver instance.
- * Uses rootMargin to start loading images 200px before they scroll into the viewport.
- * @returns {IntersectionObserver}
- */
+// Before user 200px scroll
 function getObserverInstance() {
   if (!centralizedObserver) {
     centralizedObserver = new IntersectionObserver((entries) => {
@@ -54,7 +45,7 @@ function triggerImageLoad(img) {
     setTimeout(() => {
       img.src = targetSrc;
       img.removeAttribute('data-src');
-      
+
       requestAnimationFrame(() => {
         img.classList.remove('img-loading');
         img.classList.add('img-loaded');
@@ -88,7 +79,7 @@ export function lazyLoadImage(img, src) {
 
   // Attach progressive rendering CSS class
   img.classList.add('img-lazy-transition');
-  
+
   // Set default placeholder while loading
   img.src = getPlaceholder();
   img.dataset.src = src;
@@ -105,7 +96,7 @@ export function resolveStaticAssets() {
   document.querySelectorAll('img[data-public-id]').forEach(img => {
     const publicId = img.getAttribute('data-public-id');
     const optimizedUrl = getOrCacheUrl(`img:${publicId}`, () => buildCloudinaryUrl(publicId));
-    
+
     // Eager images (like hero slides) load instantly, others are lazy-loaded progressive
     if (img.getAttribute('loading') === 'eager') {
       img.src = optimizedUrl;

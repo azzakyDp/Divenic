@@ -98,7 +98,7 @@
   stroke-width: 1.5;
   stroke-dasharray: 0 100%;
   stroke-dashoffset: 0;
-  animation: draw-text 2.5s var(--ease-out) forwards 0.3s;
+  animation: draw-text 3s var(--ease-out) forwards 0.3s;
 }
 
 @keyframes draw-text {

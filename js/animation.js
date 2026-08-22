@@ -35,14 +35,14 @@ export function initIntro() {
   }
 
   // Show intro welcome text
-  const introDuration = isMobile() ? 2200 : 3200;
+  const introDuration = isMobile() ? 3300 : 3300;
 
   intro.style.opacity = '1';
   main.style.opacity = '0';
 
   setTimeout(() => {
     // Fade out intro
-    intro.style.transition = 'opacity 0.8s ease';
+    intro.style.transition = 'opacity 0.5s ease';
     intro.style.opacity = '0';
 
     setTimeout(() => {

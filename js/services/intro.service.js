@@ -1,38 +1,24 @@
-/* ============================================================
-   DIVENIC — intro.service.js
-   Intro Service for evaluating whether intro is played or skipped
-   ============================================================ */
-
 import { isGuest, isMember, getCurrentUser } from './auth.service.js';
 import { getMemberIntroSeen, setMemberIntroSeen } from './storage.service.js';
 
-/**
- * Determines if the intro welcome animation should play.
- * - Guest Mode: Always returns true (intro plays every time).
- * - Member Mode: Returns true on first login, false on subsequent logins.
- * @returns {boolean}
- */
+// Spesial intro
 export function shouldPlayIntro() {
+  // Intro for guest always on
   if (isGuest()) {
-    // Guest mode: always play intro, do not check persistent status
     return true;
   }
 
+  // Intro for member only on first login
   if (isMember()) {
     const { memberId } = getCurrentUser();
-    // Member mode: check if this member ID has already seen the intro
     const hasSeen = getMemberIntroSeen(memberId);
     return !hasSeen;
   }
 
-  return true; // Fallback
+  return true;
 }
 
-/**
- * Saves intro completion status.
- * - Guest Mode: No-op (never saves status).
- * - Member Mode: Persists intro seen flag for current member ID.
- */
+// mark intro for member
 export function markIntroCompleted() {
   if (isMember()) {
     const { memberId } = getCurrentUser();
