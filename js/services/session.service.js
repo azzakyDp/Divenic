@@ -1,4 +1,5 @@
 import { API_BASE } from '../utils.js';
+import { resetMemberIntro } from './storage.service.js';
 
 const KEY = 'divenic_session';
 
@@ -28,6 +29,7 @@ export function setSession(patch) {
  */
 export function clearSession() {
   sessionStorage.removeItem(KEY);
+  resetMemberIntro();
 }
 
 /**

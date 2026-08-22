@@ -163,9 +163,13 @@ export function initImageSkeletons(root = document, selector = 'img') {
 export function createLoadMoreButton(label, onClick) {
   const wrap = el('div', 'view-more-wrap');
   const btn = el('button', 'btn-view-more');
+  btn.type = 'button';
 
   btn.textContent = label;
-  btn.addEventListener('click', onClick);
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (typeof onClick === 'function') onClick(e);
+  });
   wrap.appendChild(btn);
   return wrap;
 }
