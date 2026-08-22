@@ -1,17 +1,9 @@
-/* ============================================================
-   DIVENIC — asset.service.js
-   Manages local static assets, logos, and placeholders.
-   ============================================================ */
-
 export const LOCAL_ASSETS = {
   logo: 'asset/logo.png',
   placeholder: 'asset/icons/person.png'
 };
 
-/**
- * Returns the path to the default local avatar placeholder image
- * @returns {string}
- */
+// Render image and placeholder image
 export function getPlaceholder() {
   return LOCAL_ASSETS.placeholder;
 }
