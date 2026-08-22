@@ -89,11 +89,18 @@
         class="fa-solid fa-right-from-bracket"></i> Keluar</a>
   </nav>
 
-  <main id="main-content" style="padding-top: 100px;">
+  <main id="main-content" style="padding-top: 84px;">
     <h1 class="sr-only">Galeri Foto Kenangan Divenic</h1>
 
-    <section id="album" class="section">
+    <section id="album" class="section" style="padding-top: var(--space-xs);">
       <div class="container">
+        <div class="back-btn-wrap">
+          <button type="button" class="back-btn" aria-label="Kembali ke halaman sebelumnya">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            <span>Kembali</span>
+          </button>
+        </div>
+
         <div class="album-header" data-reveal>
           <span class="section-label">Arsip Foto</span>
           <h2 class="section-title">Galeri <em>Kenangan</em></h2>
@@ -159,11 +166,10 @@
 
   <!-- ── Scripts ── -->
   <script type="module">
-    import { initScrollReveal } from './js/utils.js';
+    import { initScrollReveal, initBackButton } from './js/utils.js';
     import { bindLogoutHandler } from './js/services/session.service.js';
     import { initLoadingScreen, initNavbar, initMobileMenu } from './js/animation.js';
     import { initFullGallery } from './js/gallery.js';
-
 
     document.addEventListener('DOMContentLoaded', async () => {
       initLoadingScreen();
@@ -172,6 +178,7 @@
 
       // Logout handler
       bindLogoutHandler();
+      initBackButton('.back-btn', 'index.html');
 
       // Render full gallery using batch rendering and infinite scroll sentinel
       await initFullGallery();

@@ -85,15 +85,18 @@
         class="fa-solid fa-right-from-bracket"></i> Keluar</a>
   </nav>
 
-  <main id="main-content" style="padding-top: 100px;">
-    <div style="padding: var(--space-md);">
-      <button class="back-btn" onclick="window.history.back()">Kembali</button>
-    </div>
-
+  <main id="main-content" style="padding-top: 84px;">
     <h1 class="sr-only">Daftar Mentor Divenic</h1>
 
-    <section id="mentors" class="section">
+    <section id="mentors" class="section" style="padding-top: var(--space-xs);">
       <div class="container">
+        <div class="back-btn-wrap">
+          <button type="button" class="back-btn" aria-label="Kembali ke halaman sebelumnya">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            <span>Kembali</span>
+          </button>
+        </div>
+
         <div class="mentors-header" data-reveal>
           <span class="section-label">Pembimbing</span>
           <h2 class="section-title">Semua <em>Mentor</em></h2>
@@ -145,11 +148,10 @@
   </footer>
 
   <script type="module">
-    import { initScrollReveal } from './js/utils.js';
+    import { initScrollReveal, initBackButton } from './js/utils.js';
     import { bindLogoutHandler } from './js/services/session.service.js';
     import { initLoadingScreen, initNavbar, initMobileMenu } from './js/animation.js';
     import { initMentors } from './js/member.js';
-
 
     document.addEventListener('DOMContentLoaded', async () => {
       initLoadingScreen();
@@ -157,6 +159,7 @@
       initMobileMenu();
 
       bindLogoutHandler();
+      initBackButton('.back-btn', 'index.html');
 
       // Render mentors 
       await initMentors({ _forceFull: true });

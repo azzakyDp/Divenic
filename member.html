@@ -87,11 +87,18 @@
         class="fa-solid fa-right-from-bracket"></i> Keluar</a>
   </nav>
 
-  <main id="main-content" style="padding-top: 100px;">
+  <main id="main-content" style="padding-top: 84px;">
     <h1 class="sr-only">Daftar Member Divenic</h1>
 
-    <section id="members" class="section">
+    <section id="members" class="section" style="padding-top: var(--space-xs);">
       <div class="container">
+        <div class="back-btn-wrap">
+          <button type="button" class="back-btn" aria-label="Kembali ke halaman sebelumnya">
+            <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+            <span>Kembali</span>
+          </button>
+        </div>
+
         <div class="members-header" data-reveal>
           <span class="section-label">Keluarga Divenic</span>
           <h2 class="section-title">Semua <em>Member</em></h2>
@@ -143,7 +150,7 @@
   </footer>
 
   <script type="module">
-    import { initScrollReveal } from './js/utils.js';
+    import { initScrollReveal, initBackButton } from './js/utils.js';
     import { bindLogoutHandler } from './js/services/session.service.js';
     import { initLoadingScreen, initNavbar, initMobileMenu } from './js/animation.js';
     import { initMembers } from './js/member.js';
@@ -154,6 +161,7 @@
       initMobileMenu();
 
       bindLogoutHandler();
+      initBackButton('.back-btn', 'index.html');
 
       // Render members
       await initMembers({ _forceFull: true });

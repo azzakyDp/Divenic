@@ -201,3 +201,24 @@ export function setupPasswordToggle(inputEl, toggleBtnEl) {
     }
   });
 }
+
+// Back button navigation helper with fallback
+export function navigateBack(fallbackUrl = 'index.html') {
+  if (document.referrer && document.referrer.includes(window.location.host) && window.history.length > 1) {
+    window.history.back();
+  } else {
+    window.location.href = fallbackUrl;
+  }
+}
+
+export function initBackButton(selector = '.back-btn', fallbackUrl = 'index.html') {
+  const btns = typeof selector === 'string' ? document.querySelectorAll(selector) : [selector];
+  btns.forEach(btn => {
+    if (!btn || btn.dataset.backBound) return;
+    btn.dataset.backBound = 'true';
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      navigateBack(fallbackUrl);
+    });
+  });
+}
